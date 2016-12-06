@@ -23,7 +23,7 @@ Each job running script will start with a job data structure, transform it into 
 I imagine we will have several of these, each aimed at a specific execution environment.  For starters:
  - run in a Docker container on the local host
  - run in a Docker container on a remote host, via SSH (assumes host and credentials have been configured)
- - run in a Docker container on a temporary AWS instance, via AEWS CLI and SSH (assumes AWS CLI has been configured)
+ - run in a Docker container on a temporary AWS instance, via AWS CLI and SSH (assumes AWS CLI has been configured)
  - run in a Kubernetes pod (assumes kubectl has been configured)
 
 # Docker Images
