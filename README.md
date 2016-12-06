@@ -30,26 +30,41 @@ I imagine we will have several of these, each aimed at a specific execution envi
 I think all jobs should run inside Docker containers.  This will give us the chance to establish a portable, consistent execution environment.  It will also give us the chance to choose conventions for things like how the file system should be arranged and where Matlab should look for job-specefic scripts and resource files.
 
 ## Matlab Support
-This will be the base image for all MatlabJobSupport jobs.  It will establish a minimal executation environment and conventions for how to arrange files and invoke jobs.
+This will be the base image for all MatlabJobSupport jobs.  It will establish a minimal executation environment and most of the conventions for how to arrange files and invoke jobs.
 
-This image is responsible for:
+This image will be responsible for:
  - installing system dependencies required for Matlab execution
- - convention for "mounting in" the Matlab installation from the Docker host
- - convention for invoking the container with "host" netowrking, because of Matlab license
- - convention for "mounting in" a folder to receive the Matlab execution logs
  - installing the ToolboxToolbox for managing Matlab toolbox dependencies
- - convention for toolboxes live in the container file system
+ - convention for "mounting in" the Matlab installation from the Docker host
+ - convention for invoking the container with "host" netowrking, to satsfy the Matlab license
+ - convention for "mounting in" a folder to receive the Matlab execution logs
+ - convention for where toolboxes live in the container file system
  - convention for "mounting in" shared toolboxes from the host
- - convention for "mounting in" extra files from host and added to Matlab path
- - including a startup.m to configure the ToolboxToolbox, shared toolboxes, and extra files
+ - convention for "mounting in" an additional working folder to share with the host and add to the Matlab path
+ - including a startup.m to configure the ToolboxToolbox, shared toolboxes, and working folder
+ - convention for how to invoke and pass args to the container, including:
+   - toolbox configuration command
+   - Matlab command for the job itself
 
 ## Matlab Support, plus Docker
+This will extend the base image and add support for running Docker containers inside the job container.  This will be useful for toolboxes like RenderToolbox4, which use Docker to distrubute native binaries that can be called from Matlab.
 
-## Matlab Support, plus Docker and RenderToolbox libs
+This image will be responsible for:
+ - installing Docker client
+ - convention for invoking the container with "monted in" socket to talk to host Docker daemon
 
-## More
+## Matlab Support, plus Docker and native system libs
+This will extend the "plus Docker" image and add support for native system libraries used by RenderToolbox4, like Assimp and OpenEXR.
+
+This image will be an example of how to extend the "Matlab Support" base image or "plus Docker" image, to suit a particular application like RenderToolbox4.
+
+This image will be responsible for:
+  - installing Assimp system library
+  - installing OpenEXR system library
+  - setting the LD_PRELOAD environment variable to make sure that Matlab runs with up-to-date C/C++ libs
 
 # Out of Scope
+I hope that this project will help with wrangling dependencies and syntax required to run batch, distributed, and test jobs!  But this project can't do it all.  Somethings will still be out of scope for this project.
 
 ## AWS learning and account config
 
