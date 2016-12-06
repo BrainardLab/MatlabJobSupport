@@ -64,8 +64,12 @@ This image will be responsible for:
   - setting the LD_PRELOAD environment variable to make sure that Matlab runs with up-to-date C/C++ libs
 
 # Out of Scope
-I hope that this project will help with wrangling dependencies and syntax required to run batch, distributed, and test jobs!  But this project can't do it all.  Somethings will still be out of scope for this project.
+I hope that this project will help with wrangling dependencies and syntax required to run batch, distributed, and test jobs!  But this project can't do it all.  Configuring things like external machines and services will still be up to the user -- especially when they require billing and secret credentials.
 
-## AWS learning and account config
+For example:
+ - AWS account
+ - AWS Command Line Interface `aws`
+ - Kubernetes Cluster
+ - Kubernetes command line client `kubectl`
+ - etc.
 
-## Kubernetes learning and account config
