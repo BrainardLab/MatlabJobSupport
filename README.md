@@ -25,6 +25,8 @@ I imagine we will have several of these, each aimed at a specific execution envi
  - run in a Docker container on a remote host, via SSH (assumes host and credentials have been configured)
  - run in a Docker container on a temporary AWS instance, via AWS CLI and SSH (assumes AWS CLI has been configured)
  - run in a Kubernetes pod (assumes kubectl has been configured)
+ 
+Each of these will differ by various, devious, complicated syntax.  But eventually each one needs to cause matlab to be run inside a Docker container based on the Matlab Support image.  Therefore, the last step for each of these can be the same: invoke Matlab and pass a job declaration to a standard executor function.
 
 # Docker Images
 I think all jobs should run inside Docker containers.  This will give us the chance to establish a portable, consistent execution environment.  It will also give us the chance to choose conventions for things like how the file system should be arranged and where Matlab should look for job-specefic scripts and resource files.
@@ -35,6 +37,7 @@ This will be the base image for all MatlabJobSupport jobs.  It will establish a 
 This image will be responsible for:
  - installing system dependencies required for Matlab execution
  - installing the ToolboxToolbox for managing Matlab toolbox dependencies
+ - including MatlabJobSupport itself, as a toolbox that can be kept up to date
  - convention for "mounting in" the Matlab installation from the Docker host
  - convention for invoking the container with "host" netowrking, to satsfy the Matlab license
  - convention for "mounting in" a folder to receive the Matlab execution logs
