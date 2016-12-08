@@ -52,10 +52,9 @@ setpref('ToolboxToolbox', 'localHookFolder', localHookFolder);
 % setpref('ToolboxToolbox', 'checkInternetCommand', checkInternetCommand);
 
 
-%% Set up Matlab path for job support
+%% Always deploy job support.
 tbUse('MatlabJobSupport');
-tbAddToolboxPath('toolboxPath', '/var/mjs/working');
 
-%% Start jobs in working dir
+%% Start jobs in working dir.
 cd('/var/mjs/working');
 
