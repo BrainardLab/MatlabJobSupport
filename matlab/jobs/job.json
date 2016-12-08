@@ -1,0 +1,10 @@
+{
+	"cleanupCommand": "",
+	"diskGB": null,
+	"jobCommand": "eye(4)",
+	"memoryGB": null,
+	"name": "job",
+	"pwdPath": 0,
+	"setupCommand": "",
+	"tbUseArgs": []
+}

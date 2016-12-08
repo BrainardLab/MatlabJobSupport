@@ -62,11 +62,11 @@ RUN git clone https://github.com/ToolboxHub/ToolboxRegistry.git
 RUN git clone https://github.com/BrainardLab/MatlabJobSupport.git
 
 
-### Matlab startup.m and dirs it expects to exist
-WORKDIR /usr/local/MATLAB/from-host
-WORKDIR /var/log/matlab
-WORKDIR /opt/toolboxes
-WORKDIR /var/mjs/working
+### Matlab startup.m and the dirs that it expects to exist
+RUN mkdir -p /usr/local/MATLAB/from-host
+RUN mkdir -p /var/log/matlab
+RUN mkdir -p /opt/toolboxes
+RUN mkdir -p /var/mjs/working
 COPY startup.m /mjs/startup.m
 
 ### start in known dir so that Matlab can find startup.m
