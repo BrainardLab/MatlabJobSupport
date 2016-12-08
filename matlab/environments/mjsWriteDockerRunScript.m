@@ -67,6 +67,7 @@ try
     
     fprintf(fid, '%s \\\n', dockerImage);
     fprintf(fid, '-r "mjsRunJobAndExit(''%s'');"\n', jobFile);
+
     
     fprintf(fid, '\n');
     
