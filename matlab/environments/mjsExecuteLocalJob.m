@@ -1,4 +1,4 @@
-function mjsExecuteLocalJob(job, varargin)
+function [status, result] = mjsExecuteLocalJob(job, varargin)
 % Pack up a job for Docker execution, execute it locally immediately.
 %
 % scriptFile = mjsWriteDockerRunScript(varargin)
@@ -22,7 +22,7 @@ scriptFile = mjsWriteDockerRunScript(varargin{:}, 'jobFile', workingJobFile);
 
 scriptPath = fileparts(scriptFile);
 if isempty(scriptPath)
-    system(['./' scriptFile], '-echo');
+    [status, result] = system(['./' scriptFile], '-echo');
 else
-    system(scriptFile, '-echo');
+    [status, result] = system(scriptFile, '-echo');
 end

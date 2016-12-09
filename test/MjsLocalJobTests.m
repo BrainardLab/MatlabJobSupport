@@ -21,9 +21,18 @@ classdef MjsLocalJobTests < matlab.unittest.TestCase
             command = sprintf('intValue=%d;save(''%s'', ''intValue'');', ...
                 intValue, outputFile);
             job = mjsJob( ...
-                'name', 'intSaver', ...
+                'name', 'integerSaverJob', ...
                 'jobCommand', command);
         end
+        
+        function [job, errorMessage] = errorJob(testCase)
+            errorMessage = 'This is a test error.';
+            command = {@error, errorMessage};
+            job = mjsJob( ...
+                'name', 'errorJob', ...
+                'jobCommand', command);
+        end
+        
     end
     
     methods (Test)
@@ -44,6 +53,26 @@ classdef MjsLocalJobTests < matlab.unittest.TestCase
             testCase.assertEqual(jobOutput.intValue, intValue);
         end
         
+        function testInMatlabError(testCase)
+            errorMessage = 'no error';
+            [job, expectedMessage] = testCase.errorJob();
+            try
+                mjsRunJob(job);
+            catch err
+                errorMessage = err.message;
+            end
+            testCase.assertEqual(errorMessage, expectedMessage);
+        end
+        
+        function testInDockerError(testCase)
+            [job, expectedMessage] = testCase.errorJob();
+            [status, result] = mjsExecuteLocalJob(job);
+            
+            testCase.assertNotEqual(status, 0);
+            
+            messageIndex = strfind(result, expectedMessage);
+            testCase.assertNotEmpty(messageIndex);
+        end
     end
     
 end
