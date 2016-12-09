@@ -20,7 +20,7 @@
 #  - /usr/local/MATLAB/from-host -- a real matlab installation (eg /usr/local/MATLAB/R2016a)
 #  - /var/log/matlab -- where to write matlab logs
 #  - /opt/toolboxes -- where ToolboxToolbox can look for shared/pre-installed toolboxes
-#  - /var/mjs/working -- additional files to share with the host, initial dir for job execution
+#  - WORKING_DIR -- additional custom dir to map from host, initial dir for job execution
 #
 # It establishes conventions for how to run job containers.  For example, they
 # should be run with "host" networking to satisfy the Matlab license.
@@ -33,11 +33,12 @@
 #  -v /usr/local/MATLAB/R2016a:/usr/local/MATLAB/from-host \
 #  -v /var/log/matlab:/var/log/matlab \
 #  -v /home/ben/Documents/MATLAB/toolboxes:/opt/toolboxes \
-#  -v /home/ben/Documents/MATLAB/working:/var/mjs/working \
+#  -v /home/ben/Documents/MATLAB/working:/home/ben/Documents/MATLAB/working \
+#  -e "WORKING_DIR=/home/ben/Documents/MATLAB/working" \
 #  ninjaben/mjs-base 
 #
 # Same on one line:
-# docker run --rm --net="host" -v /usr/local/MATLAB/R2016a:/usr/local/MATLAB/from-host -v /var/log/matlab:/var/log/matlab -v /home/ben/Documents/MATLAB/toolboxes:/opt/toolboxes -v /home/ben/Documents/MATLAB/working:/var/mjs/working ninjaben/mjs-base
+# docker run --rm --net="host" -v /usr/local/MATLAB/R2016a:/usr/local/MATLAB/from-host -v /var/log/matlab:/var/log/matlab -v /home/ben/Documents/MATLAB/toolboxes:/opt/toolboxes -v /home/ben/Documents/MATLAB/working:/home/ben/Documents/MATLAB/working -e "WORKING_DIR=/home/ben/Documents/MATLAB/working" ninjaben/mjs-base
 
 FROM ubuntu:14.04
 

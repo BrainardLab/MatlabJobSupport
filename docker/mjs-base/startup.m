@@ -55,6 +55,11 @@ setpref('ToolboxToolbox', 'localHookFolder', localHookFolder);
 %% Always deploy job support.
 tbUse('MatlabJobSupport');
 
-%% Start jobs in working dir.
-cd('/var/mjs/working');
 
+%% Start jobs in working dir.
+workingDir = getenv('WORKING_DIR');
+if isempty(workingDir) || 7 ~= exist(workingDir, 'dir')
+    cd('/var/mjs/working');
+else
+    cd(workingDir);
+end

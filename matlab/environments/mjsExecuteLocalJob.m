@@ -6,14 +6,19 @@ function mjsExecuteLocalJob(job, varargin)
 % 2016-2017 Brainard Lab, University of Pennsylvania
 
 parser = inputParser();
+parser.KeepUnmatched = true;
 parser.addRequired('job', @isstruct);
-parser.addParameter('jobFile', 'job.json', @ischar);
+parser.addParameter('workingDir', fullfile(tempdir(), 'mjs'), @ischar);
 parser.parse(job, varargin{:});
 job = parser.Results.job;
-jobFile = parser.Results.jobFile;
+workingDir = parser.Results.workingDir;
 
-mjsSaveJob(job, jobFile);
-scriptFile = mjsWriteDockerRunScript(varargin{:});
+% write job file to working folder on host
+workingJobFile = fullfile(workingDir, [job.name '.json']);
+mjsSaveJob(job, workingJobFile);
+
+% invoke the job file from the working folder in the container
+scriptFile = mjsWriteDockerRunScript(varargin{:}, 'jobFile', workingJobFile);
 
 scriptPath = fileparts(scriptFile);
 if isempty(scriptPath)

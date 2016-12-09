@@ -10,14 +10,14 @@ function scriptFile = mjsWriteDockerRunScript(varargin)
 % 2016-2017 Brainard Lab, University of Pennsylvania
 
 parser = inputParser();
-parser.addParameter('scriptFile', 'job.sh', @ischar);
-parser.addParameter('jobFile', 'job.json', @ischar);
+parser.addParameter('scriptFile', fullfile(tempdir(), 'mjs', 'job.sh'), @ischar);
+parser.addParameter('jobFile', fullfile(tempdir(), 'mjs', 'job.json'), @ischar);
 parser.addParameter('dockerImage', 'ninjaben/mjs-base', @ischar);
 parser.addParameter('dockerOptions', '--rm --net=host', @ischar);
 parser.addParameter('matlabDir', '', @ischar);
 parser.addParameter('logDir', '', @ischar);
 parser.addParameter('commonToolboxDir', '', @ischar);
-parser.addParameter('workingFolder', '', @ischar);
+parser.addParameter('workingDir', fullfile(tempdir(), 'mjs'), @ischar);
 parser.parse(varargin{:});
 scriptFile = parser.Results.scriptFile;
 jobFile = parser.Results.jobFile;
@@ -26,8 +26,14 @@ dockerOptions = parser.Results.dockerOptions;
 matlabDir = parser.Results.matlabDir;
 logDir = parser.Results.logDir;
 commonToolboxDir = parser.Results.commonToolboxDir;
-workingFolder = parser.Results.workingFolder;
+workingDir = parser.Results.workingDir;
 
+
+%% Make sure script dir exists.
+scriptDir = fileparts(scriptFile);
+if ~isempty(scriptDir) && 7 ~= exist(scriptDir, 'dir')
+    mkdir(scriptDir);
+end
 
 fid = fopen(scriptFile, 'w');
 if -1 == fid
@@ -61,13 +67,18 @@ try
         fprintf(fid, '-v "%s":/opt/toolboxes \\\n', commonToolboxDir);
     end
     
-    if ~isempty(workingFolder)
-        fprintf(fid, '-v "$WORKING_DIR":/var/mjs/working \\\n');
+    if isempty(workingDir)
+        % working dir private in container
+        fprintf(fid, '-e "WORKING_DIR=/var/mjs/working" \\\n');
+    else
+        % custom working dir mapped to host
+        fprintf(fid, '-e "WORKING_DIR=%s" \\\n', workingDir);
+        fprintf(fid, '-v "%s":"%s" \\\n', workingDir, workingDir);
     end
     
     fprintf(fid, '%s \\\n', dockerImage);
     fprintf(fid, '-r "mjsRunJobAndExit(''%s'');"\n', jobFile);
-
+    
     
     fprintf(fid, '\n');
     
