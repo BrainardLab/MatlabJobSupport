@@ -47,7 +47,8 @@ classdef MjsLocalJobTests < matlab.unittest.TestCase
         
         function testInDockerSuccess(testCase)
             [job, intValue, outputFile] = testCase.integerSaverJob();
-            mjsExecuteLocalJob(job, 'workingDir', testCase.tempDir);
+            mjsExecuteLocalJob(job, ...
+                'workingDir', testCase.tempDir);
             testCase.assertEqual(exist(outputFile, 'file'), 2);
             jobOutput = load(outputFile);
             testCase.assertEqual(jobOutput.intValue, intValue);
@@ -66,7 +67,8 @@ classdef MjsLocalJobTests < matlab.unittest.TestCase
         
         function testInDockerError(testCase)
             [job, expectedMessage] = testCase.errorJob();
-            [status, result] = mjsExecuteLocalJob(job);
+            [status, result] = mjsExecuteLocalJob(job, ...
+                'workingDir', testCase.tempDir);
             
             testCase.assertNotEqual(status, 0);
             

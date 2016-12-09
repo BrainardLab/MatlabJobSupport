@@ -5,12 +5,17 @@ function scriptFile = mjsWriteDockerRunScript(varargin)
 % assumes we're working with the conventions established in the Docker
 % image ninjaben/mjs-base.
 %
+% It should be the case that you can copy the generated scriptFile and
+% jobFile to another host and run them.  The host must have Matlab
+% and Docker installed.  The rest should "just work".  At least, that is
+% the goal.
+%
 % scriptFile = mjsWriteDockerRunScript(varargin)
 %
 % 2016-2017 Brainard Lab, University of Pennsylvania
 
 parser = inputParser();
-parser.addParameter('scriptFile', fullfile(tempdir(), 'mjs', 'job.sh'), @ischar);
+parser.addParameter('scriptFile', '', @ischar);
 parser.addParameter('jobFile', fullfile(tempdir(), 'mjs', 'job.json'), @ischar);
 parser.addParameter('dockerImage', 'ninjaben/mjs-base', @ischar);
 parser.addParameter('dockerOptions', '--rm --net=host', @ischar);
@@ -28,6 +33,11 @@ logDir = parser.Results.logDir;
 commonToolboxDir = parser.Results.commonToolboxDir;
 workingDir = parser.Results.workingDir;
 
+% default script name based on job name
+if isempty(scriptFile)
+    [jobPath, jobBase] = fileparts(jobFile);
+    scriptFile = fullfile(jobPath, [jobBase '.sh']);
+end
 
 %% Make sure script dir exists.
 scriptDir = fileparts(scriptFile);
