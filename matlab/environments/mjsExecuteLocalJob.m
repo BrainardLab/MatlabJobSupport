@@ -13,13 +13,13 @@ parser.parse(job, varargin{:});
 job = parser.Results.job;
 workingDir = parser.Results.workingDir;
 
-% write job file to working folder on host
+% write the job, and a script that will run the job
 workingJobFile = fullfile(workingDir, [job.name '.json']);
-mjsSaveJob(job, workingJobFile);
+scriptFile = mjsWriteDockerRunScript(varargin{:}, ...
+    'job', job, ...
+    'jobFile', workingJobFile);
 
-% invoke the job file from the working folder in the container
-scriptFile = mjsWriteDockerRunScript(varargin{:}, 'jobFile', workingJobFile);
-
+% execute the script we just wrote
 scriptPath = fileparts(scriptFile);
 if isempty(scriptPath)
     [status, result] = system(['./' scriptFile], '-echo');
