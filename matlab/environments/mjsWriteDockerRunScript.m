@@ -15,9 +15,8 @@ function scriptFile = mjsWriteDockerRunScript(varargin)
 % 2016-2017 Brainard Lab, University of Pennsylvania
 
 parser = inputParser();
-parser.addParameter('job', [], @(val) isempty(val) || isstruct(val));
+parser.addRequired('job', @isstruct);
 parser.addParameter('scriptFile', '', @ischar);
-parser.addParameter('jobFile', fullfile(tempdir(), 'mjs', 'job.json'), @ischar);
 parser.addParameter('dockerImage', 'ninjaben/mjs-base', @ischar);
 parser.addParameter('dockerOptions', '--rm --net=host', @ischar);
 parser.addParameter('toolboxToolboxDir', '', @ischar);
@@ -30,7 +29,6 @@ parser.addParameter('workingDir', fullfile(tempdir(), 'mjs'), @ischar);
 parser.parse(varargin{:});
 job = parser.Results.job;
 scriptFile = parser.Results.scriptFile;
-jobFile = parser.Results.jobFile;
 dockerImage = parser.Results.dockerImage;
 dockerOptions = parser.Results.dockerOptions;
 toolboxToolboxDir = parser.Results.toolboxToolboxDir;
@@ -41,16 +39,14 @@ logDir = parser.Results.logDir;
 commonToolboxDir = parser.Results.commonToolboxDir;
 workingDir = parser.Results.workingDir;
 
-% optionally save the given job at the given jobFile
-if ~isempty(job)
-    mjsSaveJob(job, jobFile);
-end
-
 % default script name based on job name
 if isempty(scriptFile)
-    [jobPath, jobBase] = fileparts(jobFile);
-    scriptFile = fullfile(jobPath, [jobBase '.sh']);
+    scriptFile = fullfile(workingDir, [job.name '.sh']);
 end
+
+%% Make an embeddable version of the JSON.
+jobJson = mjsSaveJob(job);
+escapedJson = embeddableJson(jobJson);
 
 %% Make sure script dir exists.
 scriptDir = fileparts(scriptFile);
@@ -67,6 +63,9 @@ end
 try
     %% Shebang for predictable environment.
     fprintf(fid, '#!/bin/sh\n');
+    
+    %% Embed the job JSON in the script itself.
+    fprintf(fid, 'JOB_JSON="%s"\n', escapedJson);
     
     %% Find Matlab in the execution environment.
     if isempty(matlabDir)
@@ -112,7 +111,7 @@ try
     end
     
     fprintf(fid, '%s \\\n', dockerImage);
-    fprintf(fid, '-r "mjsRunJobAndExit(''%s'');"\n', jobFile);
+    fprintf(fid, '-r "mjsRunJobAndExit(''$JOB_JSON'');"\n');
     
     
     fprintf(fid, '\n');
@@ -125,3 +124,16 @@ catch err
 end
 
 system(['chmod +x ' scriptFile]);
+
+
+%% Format JSON so it can survive in a shell script and as a Matlab string.
+function embeddable = embeddableJson(json)
+escaped = regexprep(json, '"', '\\"', 'all');
+quoted = regexprep(escaped, '''', '''''', 'all');
+
+% remove whitespace, except space itself
+isWhiteSpace = isspace(quoted);
+isSpaceCharacter = quoted == ' ';
+toKeep = ~isWhiteSpace | isSpaceCharacter;
+
+embeddable = quoted(toKeep);
