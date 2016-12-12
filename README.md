@@ -32,7 +32,7 @@ Each of these will differ by various, devious, complicated syntax.  But eventual
 I think all jobs should run inside Docker containers.  This will give us the chance to establish a portable, consistent execution environment.  It will also give us the chance to choose conventions for things like how the file system should be arranged and where Matlab should look for job-specefic scripts and resource files.
 
 ## Matlab Support
-This will be the base image for all MatlabJobSupport jobs.  It will establish a minimal executation environment and most of the conventions for how to arrange files and invoke jobs.
+This will be the base image for all MatlabJobSupport jobs.  It will establish a minimal execution environment and most of the conventions for how to arrange files and invoke jobs.
 
 This image will be responsible for:
  - installing system dependencies required for Matlab execution
