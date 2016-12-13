@@ -19,6 +19,7 @@ parser.addRequired('job', @isstruct);
 parser.addParameter('scriptFile', '', @ischar);
 parser.addParameter('dockerImage', 'ninjaben/mjs-base', @ischar);
 parser.addParameter('dockerOptions', '--rm --net=host', @ischar);
+parser.addParameter('toolboxToolboxFlavor', '', @ischar);
 parser.addParameter('toolboxToolboxDir', '', @ischar);
 parser.addParameter('toolboxesDir', '', @ischar);
 parser.addParameter('toolboxHooksDir', '', @ischar);
@@ -33,6 +34,7 @@ job = parser.Results.job;
 scriptFile = parser.Results.scriptFile;
 dockerImage = parser.Results.dockerImage;
 dockerOptions = parser.Results.dockerOptions;
+toolboxToolboxFlavor = parser.Results.toolboxToolboxFlavor;
 toolboxToolboxDir = parser.Results.toolboxToolboxDir;
 toolboxesDir = parser.Results.toolboxesDir;
 toolboxHooksDir = parser.Results.toolboxHooksDir;
@@ -84,6 +86,16 @@ try
         fprintf(fid, 'MATLAB_DIR="$(dirname "$MATLAB_BIN_DIR")"\n');
     else
         fprintf(fid, 'MATLAB_DIR="%s"\n', matlabDir);
+    end
+    
+    %% Allow for controlled versions of toolboxtoolbox.
+    if ~isempty(toolboxToolboxFlavor)
+        fprintf(fid, 'TOOLBOX_TOOLBOX_FLAVOR="%s"\n', toolboxToolboxFlavor);
+    end
+    
+    %% Allow for automatic pull of Docker image.
+    if ~isempty(regexp(dockerImage, '\:latest$', 'once'))
+        fprintf(fid, 'docker pull "%s"\n', dockerImage);
     end
     
     %% Do docker run with options and job command.
@@ -147,10 +159,14 @@ system(['chmod +x ' scriptFile]);
 
 %% Format JSON so it can survive in a shell script and as a Matlab string.
 function embeddable = embeddableJson(json)
+
+% escape double quotes around JSON strings, for the shell interpreter
 escaped = regexprep(json, '"', '\\"', 'all');
+
+% double-up single quotes, for the Matlab interpreter
 quoted = regexprep(escaped, '''', '''''', 'all');
 
-% remove whitespace, except space itself
+% remove most whitespace for the Matlab interpreter
 isWhiteSpace = isspace(quoted);
 isSpaceCharacter = quoted == ' ';
 toKeep = ~isWhiteSpace | isSpaceCharacter;
