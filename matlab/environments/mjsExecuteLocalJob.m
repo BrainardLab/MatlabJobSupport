@@ -1,14 +1,16 @@
-function [status, result] = mjsExecuteLocalJob(job, varargin)
+function [status, result, scriptFile] = mjsExecuteLocalJob(job, varargin)
 % Turn a job into a Docker shell script, execute it locally, immediately.
 %
-% [status, result] = mjsExecuteLocalJob(job) causes the given job struct to
-% be executed locally, in a Docker container.
+% [status, result, scriptFile] = mjsExecuteLocalJob(job) causes the given
+% job struct to be executed locally, in a Docker container.  Returns the
+% execution status code and result.  Also returns the path to the script
+% file that was generated.
 %
-% mjsExecuteLocalJob( ... 'name', value ...) pass additional arguments to
-% configure how the container will be configured.  See
-% mjsWriteDockerRunScript() for details.
+% mjsExecuteLocalJob( ... 'name', value ...) pass additional parameters to
+% specify how the shell script will configure the container.  For details,
+% see mjsWriteDockerRunScript(), which takes the same parameters.
 %
-% [status, result] = mjsExecuteLocalJob(job, varargin)
+% [status, result, scriptFile] = mjsExecuteLocalJob(job, varargin)
 %
 % 2016-2017 Brainard Lab, University of Pennsylvania
 
