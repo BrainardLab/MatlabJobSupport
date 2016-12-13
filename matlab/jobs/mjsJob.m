@@ -16,7 +16,6 @@ function job = mjsJob(varargin)
 % empty value, to accept whatever defaults are in the execution
 % environment.
 %   - name -- any handy name for the job
-%   - pwdPath -- whether or not to addpath(genpath(pwd()))
 %   - tbUseArgs -- arguments to pass to ToolboxToolbox tbUse()
 %   - setupCommand -- command to run after tbUse() and before jobCommand
 %   - jobCommand -- job or computation command to run
@@ -37,7 +36,6 @@ parser.CaseSensitive = true;
 parser.PartialMatching = true;
 parser.KeepUnmatched = true;
 parser.addParameter('name', 'job', @ischar);
-parser.addParameter('pwdPath', false, @islogical);
 parser.addParameter('tbUseArgs', {}, @iscell);
 parser.addParameter('setupCommand', '', @(val) ischar(val) || iscell(val));
 parser.addParameter('jobCommand', '', @(val) ischar(val) || iscell(val));

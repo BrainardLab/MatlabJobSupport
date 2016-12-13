@@ -1,4 +1,4 @@
-%% Startup script for use with the Toolbox Toolbox.
+%% Startup script for use with ToolboxToolbox and MatlabJobSupport.
 %
 
 %% Where is the Toolbox Toolbox installed?
@@ -54,6 +54,13 @@ setpref('ToolboxToolbox', 'localHookFolder', localHookFolder);
 
 %% Always deploy job support.
 tbUse('MatlabJobSupport');
+
+
+%% Add input dir to Matlab path.
+inputDir = getenv('INPUT_DIR');
+if ~isempty(workingDir) && 7 == exist(inputDir, 'dir')
+    tbAddToolboxPath('toolboxPath', inputDir);
+end
 
 
 %% Start jobs in working dir.

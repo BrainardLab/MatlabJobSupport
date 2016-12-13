@@ -48,7 +48,7 @@ classdef MjsLocalJobTests < matlab.unittest.TestCase
         function testInDockerSuccess(testCase)
             [job, intValue, outputFile] = testCase.integerSaverJob();
             mjsExecuteLocalJob(job, ...
-                'workingDir', testCase.tempDir);
+                'outputDir', testCase.tempDir);
             testCase.assertEqual(exist(outputFile, 'file'), 2);
             jobOutput = load(outputFile);
             testCase.assertEqual(jobOutput.intValue, intValue);
@@ -68,7 +68,7 @@ classdef MjsLocalJobTests < matlab.unittest.TestCase
         function testInDockerError(testCase)
             [job, expectedMessage] = testCase.errorJob();
             [status, result] = mjsExecuteLocalJob(job, ...
-                'workingDir', testCase.tempDir);
+                'outputDir', testCase.tempDir);
             
             testCase.assertNotEqual(status, 0);
             
@@ -76,45 +76,46 @@ classdef MjsLocalJobTests < matlab.unittest.TestCase
             testCase.assertNotEmpty(messageIndex);
         end
         
-        function testInDockerWorkingFolderPathError(testCase)
-            % copy a test function deep inside the working dir.
+        function testInDockerInputFolderPathError(testCase)
+            % copy a test function deep inside the input dir.
             pathHere = fileparts(mfilename('fullpath'));
             testFunction = fullfile(pathHere, 'fixture', 'mjsJobTestFunction.m');
-            workingDeep = fullfile(testCase.tempDir, 'deep', 'deep', 'deep');
+            inputDir = fullfile(testCase.tempDir, 'input');
+            workingDeep = fullfile(inputDir, 'deep', 'deep');
             mkdir(workingDeep);
             deepFunction = fullfile(workingDeep, 'deepTestFunction.m');
             copyfile(testFunction, deepFunction);
             
-            % "forget" to add the working folder to the path
+            % "forget" to add the input folder that contains the function
             job = mjsJob( ...
-                'pwdPath', false, ...
-                'name', 'needsPwdPath', ...
+                'name', 'needsInputOnPath', ...
                 'jobCommand', {@deepTestFunction});
             status = mjsExecuteLocalJob(job, ...
-                'workingDir', testCase.tempDir);
+                'outputDir', testCase.tempDir);
             
             % should fail because mjsJobTestFunction not on Matlab path
             testCase.assertNotEqual(status, 0);
         end
         
-        function testInDockerWorkingFolderPathSuccess(testCase)
-            % copy a test function deep inside the working dir.
+        function testInDockerInputFolderPathSuccess(testCase)
+            % copy a test function deep inside the input dir.
             pathHere = fileparts(mfilename('fullpath'));
             testFunction = fullfile(pathHere, 'fixture', 'mjsJobTestFunction.m');
-            workingDeep = fullfile(testCase.tempDir, 'deep', 'deep', 'deep');
+            inputDir = fullfile(testCase.tempDir, 'input');
+            workingDeep = fullfile(inputDir, 'deep', 'deep');
             mkdir(workingDeep);
             deepFunction = fullfile(workingDeep, 'deepTestFunction.m');
             copyfile(testFunction, deepFunction);
             
-            % "remember" to add the working folder to the path
+            % "remember" to add the input folder that contains the function
             job = mjsJob( ...
-                'pwdPath', true, ...
-                'name', 'needsPwdPath', ...
+                'name', 'needsInputOnPath', ...
                 'jobCommand', {@deepTestFunction});
             status = mjsExecuteLocalJob(job, ...
-                'workingDir', testCase.tempDir);
+                'inputDir', inputDir, ...
+                'outputDir', testCase.tempDir);
             
-            % should fail because mjsJobTestFunction not on Matlab path
+            % should succeed with mjsJobTestFunction on the Matlab path
             testCase.assertEqual(status, 0);
         end
         
@@ -122,7 +123,7 @@ classdef MjsLocalJobTests < matlab.unittest.TestCase
         function testInDockerWithLogFile(testCase)
             job = testCase.integerSaverJob();
             mjsExecuteLocalJob(job, ...
-                'workingDir', testCase.tempDir, ...
+                'outputDir', testCase.tempDir, ...
                 'logDir', testCase.tempDir);
             
             expectedLogFile = fullfile(testCase.tempDir, 'matlab.log');
@@ -153,7 +154,7 @@ classdef MjsLocalJobTests < matlab.unittest.TestCase
             
             % run the job with the shared toolbox folder mapped in
             [status, result] = mjsExecuteLocalJob(job, ...
-                'workingDir', testCase.tempDir, ...
+                'outputDir', testCase.tempDir, ...
                 'commonToolboxDir', commonToolboxDir);
             
             testCase.assertEqual(status, 0);
@@ -166,5 +167,4 @@ classdef MjsLocalJobTests < matlab.unittest.TestCase
         end
         
     end
-    
 end

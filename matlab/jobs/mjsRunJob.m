@@ -18,13 +18,6 @@ printTimestamp('Starting job named "%s"', job.name);
 
 
 %% Set up.
-if job.pwdPath
-    pathToAdd = pwd();
-    printTimestamp('...adding to path <%s>', pathToAdd);
-    tbAddToolboxPath('toolboxPath', pathToAdd);
-    printTimestamp('...added to path');
-end
-
 if ~isempty(job.tbUseArgs)
     argString = strtrim(evalc('disp(job.tbUseArgs)'));
     printTimestamp('...doing tbUse() with args <%s>', argString);

@@ -25,7 +25,9 @@ parser.addParameter('toolboxHooksDir', '', @ischar);
 parser.addParameter('matlabDir', '', @ischar);
 parser.addParameter('logDir', '', @ischar);
 parser.addParameter('commonToolboxDir', '', @ischar);
-parser.addParameter('workingDir', fullfile(tempdir(), 'mjs'), @ischar);
+parser.addParameter('inputDir', fullfile(tempdir(), 'mjs', 'input'), @ischar);
+parser.addParameter('outputDir', fullfile(tempdir(), 'mjs', 'output'), @ischar);
+parser.addParameter('workingDir', '', @ischar);
 parser.parse(varargin{:});
 job = parser.Results.job;
 scriptFile = parser.Results.scriptFile;
@@ -37,11 +39,18 @@ toolboxHooksDir = parser.Results.toolboxHooksDir;
 matlabDir = parser.Results.matlabDir;
 logDir = parser.Results.logDir;
 commonToolboxDir = parser.Results.commonToolboxDir;
+inputDir = parser.Results.inputDir;
+outputDir = parser.Results.outputDir;
 workingDir = parser.Results.workingDir;
 
-% default script name based on job name
+% default workingDir is outputDir
+if isempty(workingDir)
+    workingDir = outputDir;
+end
+
+% default script name in input folder, based on job name
 if isempty(scriptFile)
-    scriptFile = fullfile(workingDir, [job.name '.sh']);
+    scriptFile = fullfile(inputDir, [job.name '.sh']);
 end
 
 %% Make an embeddable version of the JSON.
@@ -101,18 +110,28 @@ try
         fprintf(fid, '-v "%s":/opt/toolboxes \\\n', commonToolboxDir);
     end
     
-    if isempty(workingDir)
-        % working dir private in container
-        fprintf(fid, '-e "WORKING_DIR=/var/mjs/working" \\\n');
+    if isempty(inputDir)
+        fprintf(fid, '-e "INTPUT_DIR=/var/mjs" \\\n');
     else
-        % custom working dir mapped to host
+        fprintf(fid, '-e "INTPUT_DIR=%s" \\\n', inputDir);
+        fprintf(fid, '-v "%s":"%s" \\\n', inputDir, inputDir);
+    end
+    
+    if isempty(outputDir)
+        fprintf(fid, '-e "OUTPUT_DIR=/var/mjs" \\\n');
+    else
+        fprintf(fid, '-e "OUTPUT_DIR=%s" \\\n', outputDir);
+        fprintf(fid, '-v "%s":"%s" \\\n', outputDir, outputDir);
+    end
+    
+    if isempty(workingDir)
+        fprintf(fid, '-e "WORKING_DIR=/var/mjs" \\\n');
+    else
         fprintf(fid, '-e "WORKING_DIR=%s" \\\n', workingDir);
-        fprintf(fid, '-v "%s":"%s" \\\n', workingDir, workingDir);
     end
     
     fprintf(fid, '%s \\\n', dockerImage);
     fprintf(fid, '-r "mjsRunJobAndExit(''$JOB_JSON'');"\n');
-    
     
     fprintf(fid, '\n');
     
