@@ -4,6 +4,13 @@
 %% Where is the Toolbox Toolbox installed?
 toolboxToolboxDir = '/mjs/ToolboxToolbox';
 
+% use specific version of toolbox toolbox?
+toolboxToolboxFlavor = getenv('TOOLBOX_TOOLBOX_FLAVOR');
+if strcmp('latest', toolboxToolboxFlavor)
+    system('cd "%s" && git pull', toolboxToolboxDir);
+elseif ~isempty(toolboxToolboxFlavor)
+    system('cd "%s" && git checkout "%s"', toolboxToolboxDir, toolboxToolboxFlavor);
+end
 
 %% Set up the path.
 originalDir = pwd();
@@ -66,7 +73,7 @@ end
 %% Start jobs in working dir.
 workingDir = getenv('WORKING_DIR');
 if isempty(workingDir) || 7 ~= exist(workingDir, 'dir')
-    cd('/var/mjs/working');
+    cd('/var/mjs');
 else
     cd(workingDir);
 end
