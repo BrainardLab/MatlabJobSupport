@@ -25,8 +25,8 @@ parser.addParameter('toolboxHooksDir', '', @ischar);
 parser.addParameter('matlabDir', '', @ischar);
 parser.addParameter('logDir', '', @ischar);
 parser.addParameter('commonToolboxDir', '', @ischar);
-parser.addParameter('inputDir', fullfile(tempdir(), 'mjs', 'input'), @ischar);
-parser.addParameter('outputDir', fullfile(tempdir(), 'mjs', 'output'), @ischar);
+parser.addParameter('inputDir', '', @ischar);
+parser.addParameter('outputDir', '', @ischar);
 parser.addParameter('workingDir', '', @ischar);
 parser.parse(varargin{:});
 job = parser.Results.job;
@@ -48,9 +48,9 @@ if isempty(workingDir)
     workingDir = outputDir;
 end
 
-% default script name in input folder, based on job name
+% default script name based on job name
 if isempty(scriptFile)
-    scriptFile = fullfile(inputDir, [job.name '.sh']);
+    scriptFile = fullfile(tempdir(), 'mjs', 'scripts', [job.name '.sh']);
 end
 
 %% Make an embeddable version of the JSON.
@@ -111,9 +111,9 @@ try
     end
     
     if isempty(inputDir)
-        fprintf(fid, '-e "INTPUT_DIR=/var/mjs" \\\n');
+        fprintf(fid, '-e "INPUT_DIR=/var/mjs" \\\n');
     else
-        fprintf(fid, '-e "INTPUT_DIR=%s" \\\n', inputDir);
+        fprintf(fid, '-e "INPUT_DIR=%s" \\\n', inputDir);
         fprintf(fid, '-v "%s":"%s" \\\n', inputDir, inputDir);
     end
     
