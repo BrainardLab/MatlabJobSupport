@@ -17,7 +17,7 @@ function scriptFile = mjsWriteDockerRunScript(varargin)
 parser = inputParser();
 parser.addRequired('job', @isstruct);
 parser.addParameter('scriptFile', '', @ischar);
-parser.addParameter('dockerImage', 'ninjaben/mjs-base', @ischar);
+parser.addParameter('dockerImage', 'ninjaben/mjs-base:latest', @ischar);
 parser.addParameter('dockerOptions', '--rm --net=host', @ischar);
 parser.addParameter('toolboxToolboxFlavor', '', @ischar);
 parser.addParameter('toolboxToolboxDir', '', @ischar);
