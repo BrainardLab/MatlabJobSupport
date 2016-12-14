@@ -18,15 +18,15 @@ printTimestamp('Starting job named "%s"', job.name);
 
 
 %% Set up.
+if ~isempty(job.setupCommand)
+    doCommand(job.setupCommand, 'setup');
+end
+
 if ~isempty(job.tbUseArgs)
     argString = strtrim(evalc('disp(job.tbUseArgs)'));
     printTimestamp('...doing tbUse() with args <%s>', argString);
     tbUse(job.tbUseArgs{:});
     printTimestamp('...did tbUse()');
-end
-
-if ~isempty(job.setupCommand)
-    doCommand(job.setupCommand, 'setup');
 end
 
 %% The job.
