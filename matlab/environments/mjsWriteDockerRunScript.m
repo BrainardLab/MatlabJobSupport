@@ -15,6 +15,7 @@ function scriptFile = mjsWriteDockerRunScript(varargin)
 % 2016-2017 Brainard Lab, University of Pennsylvania
 
 parser = inputParser();
+parser.KeepUnmatched = true;
 parser.addRequired('job', @isstruct);
 parser.addParameter('scriptFile', '', @ischar);
 parser.addParameter('dockerImage', 'ninjaben/mjs-base', @ischar);

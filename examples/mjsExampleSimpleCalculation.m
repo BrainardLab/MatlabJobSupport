@@ -23,7 +23,7 @@ clc;
 
 job = mjsJob( ...
     'name', 'factorBigInt', ...
-    'jobCommand', 'factor(intmax(''uint64''))');
+    'jobCommand', 'factor(intmax(''uint32''))');
 
 fprintf('Here''s the job we just created:\n');
 disp(job);
