@@ -18,7 +18,8 @@ parser = inputParser();
 parser.addRequired('job', @isstruct);
 parser.addParameter('scriptFile', '', @ischar);
 parser.addParameter('dockerImage', 'ninjaben/mjs-base:latest', @ischar);
-parser.addParameter('dockerOptions', '--rm --net=host', @ischar);
+parser.addParameter('dockerOptions', '--rm', @ischar);
+parser.addParameter('dockerNetwork', '--net=host', @ischar);
 parser.addParameter('toolboxToolboxFlavor', '', @ischar);
 parser.addParameter('toolboxToolboxDir', '', @ischar);
 parser.addParameter('toolboxesDir', '', @ischar);
@@ -34,6 +35,7 @@ job = parser.Results.job;
 scriptFile = parser.Results.scriptFile;
 dockerImage = parser.Results.dockerImage;
 dockerOptions = parser.Results.dockerOptions;
+dockerNetwork = parser.Results.dockerNetwork;
 toolboxToolboxFlavor = parser.Results.toolboxToolboxFlavor;
 toolboxToolboxDir = parser.Results.toolboxToolboxDir;
 toolboxesDir = parser.Results.toolboxesDir;
@@ -99,7 +101,7 @@ try
     end
     
     %% Do docker run with options and job command.
-    fprintf(fid, 'docker run %s \\\n', dockerOptions);
+    fprintf(fid, 'docker run %s %s \\\n', dockerOptions, dockerNetwork);
     fprintf(fid, '-v "$MATLAB_DIR":/usr/local/MATLAB/from-host \\\n');
     
     if ~isempty(toolboxToolboxDir)
