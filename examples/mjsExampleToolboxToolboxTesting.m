@@ -76,7 +76,7 @@ jenkinsScript = mjsWriteDockerRunScript(job, ...
 
 fprintf('Shell script for remote Jenkins server:\n');
 system(sprintf('cat "%s"', jenkinsScript));
-fprintf('The special line for Jenkins is the one with "$WORKSPACE".\n');
+fprintf('The special line for Jenkins is the one with "-v "$WORKSPACE"".\n');
 
 
 

@@ -40,11 +40,11 @@ mjsRunJob(job);
 
 %% Run the job in a Docker container on this machine.
 %   This will generate a shell script to invoke Matlab with this job, in a
-%   separate Docker process.  It handles lots of shell and Docker syntax
-%   for us.
+%   separate Docker process.
 %
-%   For Docker execution, we need "install" IBIOColorDetect in the
+%   For Docker execution, we need install IBIOColorDetect inside the
 %   contianer.  This has two unusual steps for IBIOColorDetect:
+%
 %       - manually supply IBIOColorDetect repo, instead of letting
 %       ToolboxToolbox clone it automatically
 %           - do this by mounting in the host's toolbox folder as 'toolboxesDir'
@@ -53,16 +53,19 @@ mjsRunJob(job);
 %       clone it automatically.
 %           - do this by adding a job setupCommand.
 %
-%   After these two steps, we should be able to do tbUse('IBIOColorDetect')
-%   inside the container.
+%   After these two steps, we can  do tbUse('IBIOColorDetect') inside the
+%   container.
 
-% copy the local hook template to the expected folder
-%   with folder conventions established by mjs-base Docker image
-job.setupCommand = 'copyfile(''/mjs/toolboxes/IBIOColorDetect/configuration/IBIOColorDetectLocalHookTemplate.m'', ''/mjs/toolboxHooks/IBIOColorDetect.m'')';
+% job will "insatll" the local hook template to the expected folder
+%   folder conventions are established by mjs-base Docker image
+job.setupCommand = {@copyfile, ...
+    '/mjs/toolboxes/IBIOColorDetect/configuration/IBIOColorDetectLocalHookTemplate.m', ...
+    '/mjs/toolboxHooks/IBIOColorDetect.m'};
 
-% supply IBIOColorDetect repo from host toolboxes dir
+% run the job with IBIOColorDetect supplied from the host toolbox dir
+toolboxRoot = getpref('ToolboxToolbox', 'toolboxRoot');
 [status, result, localScript] = mjsExecuteLocalJob(job, ...
-    'toolboxesDir', getpref('ToolboxToolbox', 'toolboxRoot'));
+    'toolboxesDir', toolboxRoot);
 
 fprintf('Docker execution had status %d (0 is good.).\n', status);
 fprintf('Shell script generated for local machine:\n');
@@ -81,26 +84,17 @@ system(sprintf('cat "%s"', localScript));
 %   the Docker container at the right place.  We can do this by specifying
 %   a value for the container's 'toolboxesDir'.
 
-% supply IBIOColorDetect repo from Jenkins WORKSPACE
+% run the job with IBIOColorDetect supplied from the Jenkins WORKSPACE
+toolboxRoot = '$WORKSPACE';
 jenkinsScript = mjsWriteDockerRunScript(job, ...
-    'toolboxesDir', '$WORKSPACE');
+    'toolboxesDir', toolboxRoot);
 
 fprintf('Shell script for remote Jenkins server:\n');
 system(sprintf('cat "%s"', jenkinsScript));
-fprintf('The special line for Jenkins is the one with "$WORKSPACE".\n');
-
+fprintf('The special line for Jenkins is the one with "-v "$WORKSPACE".\n');
 
 
 %% Install in Jenkins.
 %   The next step would be to copy the Jenkins shell script into a new
 %   project on our Jenkins server.  Since the server has matlab and Docker
 %   installed, this script is able to take care of the rest.
-%
-%   What's cool about this is we can create the job locally and test it
-%   in Docker locally.  Then when we ship the job off to Jenkins, Docker
-%   gives us confidence that the job will run the same there as it did
-%   here.
-%
-%   Also, we don't have to install or configure anything special on the
-%   Jenkins server in order to run this job -- just Matlab and Docker, and
-%   the generated script takes care of the rest.
