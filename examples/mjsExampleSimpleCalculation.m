@@ -48,14 +48,14 @@ mjsRunJob(job);
 %   machine, into the Docker container.  So Matlab is initially confused by
 %   its new environment.
 
-[status, result, localScript] = mjsExecuteLocalJob(job);
+[status, result, localScript] = mjsExecuteLocal(job);
 
 fprintf('Docker execution had status %d (0 is good.).\n', status);
 
 
 %% Look at the script that was generated.
 %   Let's look at the shell script generated above, by the command
-%   mjsExecuteLocalJob(job).
+%   mjsExecuteLocal(job).
 
 fprintf('Generated shell script:\n');
 system(sprintf('cat "%s"', localScript));
@@ -72,7 +72,7 @@ system(sprintf('cat "%s"', localScript));
 %   - invoke matlab with the function mjsRunJobAndExit(), and the JSON job representation
 %
 % All of these generated commands can be customized by passing parameters
-% to mjsExecuteLocalJob().  For example, 'inputDir' and 'outputDir' can by
+% to mjsExecuteLocal().  For example, 'inputDir' and 'outputDir' can by
 % specified in order share directories from the host with the container.
 %
 % See also mjsWriteDockerRunScript(), which generates a shell script but

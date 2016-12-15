@@ -51,7 +51,7 @@ mjsRunJob(job);
 %   machine, into the Docker container.  So Matlab is initially confused by
 %   the new environment.
 
-[status, result, localScript] = mjsExecuteLocalJob(job);
+[status, result, localScript] = mjsExecuteLocal(job);
 fprintf('Docker execution had status %d (0 is good.).\n', status);
 
 fprintf('Shell script generated for local machine:\n');

@@ -1,7 +1,12 @@
-% Create a job and Docker run script for a simple calculation, over ssh.
+% Create a job and Docker run script for a simple calculation, via ssh.
 %
 % This script will produce a job struct suitable for doing a simple
 % calculation.  It will try to execute the job remotely, via SSH.
+%
+% This assumes you have a Linux server running somewhere with Matlab and
+% Docker installed, and you have SSH credentials to connect to it.
+%
+% Setting all that up would be outside the scope of this example.
 %
 % 2016-2017 Brainard Lab, University of Pennsylvania
 
@@ -20,13 +25,8 @@ disp(job);
 
 
 %% Choose SSH credentials.
-%   This assumes you have a server running somewhere,
-%   and you have SSH credentials to connect to it.
-%
-%   Setting that up would be outside the scope of this example.
-%
 %   This example uses credentials that would only work for the developer --
-%   sorry!  At least, they show you how to call the mjsExecuteSshJob()
+%   sorry!  At least, they show you how to call the mjsExecuteSsh()
 %   function.
 %
 %   The output should look the same as for a local job.  The last message
@@ -41,7 +41,7 @@ user = 'ubuntu';
 % private key / identity file for the same user
 identity = '/home/ben/aws/bsh-imac-workstation.pem';
 
-[status, result, sshScript] = mjsExecuteSshJob(job, ...
+[status, result, sshScript] = mjsExecuteSsh(job, ...
     'host', host, ...
     'user', user, ...
     'identity', identity);

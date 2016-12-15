@@ -1,33 +1,33 @@
-function [status, result, scriptFile] = mjsExecuteSshJob(job, varargin)
+function [status, result, scriptFile] = mjsExecuteSsh(job, varargin)
 % Turn a job into a Docker/SSH shell script, execute it immediately.
 %
-% [status, result, scriptFile] = mjsExecuteSshJob(job) causes the given
+% [status, result, scriptFile] = mjsExecuteSsh(job) causes the given
 % job struct to be executed remotely, via SSH, in a Docker container.
 % Returns the execution status code and result.  Also returns the path to
 % the script file that was generated.
 %
-% mjsExecuteSshJob( ... 'host', host) specify the address or hostname of
+% mjsExecuteSsh( ... 'host', host) specify the address or hostname of
 % the remote host to access via SSH.
 %
-% mjsExecuteSshJob( ... 'port', port) specify the port to connect to on the
+% mjsExecuteSsh( ... 'port', port) specify the port to connect to on the
 % remote host.
 %
-% mjsExecuteSshJob( ... 'user', user) specify the usename to use when
+% mjsExecuteSsh( ... 'user', user) specify the usename to use when
 % connecting to the remote host.
 %
-% mjsExecuteSshJob( ... 'identity', identity) specify the path to an
+% mjsExecuteSsh( ... 'identity', identity) specify the path to an
 % identity file (often .pem) to use for authenticating with the remote
 % host.
 %
-% mjsExecuteSshJob( ... 'knownHostsFile', knownHostsFile) specify the path
+% mjsExecuteSsh( ... 'knownHostsFile', knownHostsFile) specify the path
 % to the ssh "known_hosts" file, where the ssh key of the given host can be
 % automatically accepted.  The default is '~/.ssh/known_hosts'.
 %
-% mjsExecuteSshJob( ... 'name', value ...) pass additional parameters to
+% mjsExecuteSsh( ... 'name', value ...) pass additional parameters to
 % specify how the shell script will configure the container.  For details,
 % see mjsWriteDockerRunScript(), which takes the same parameters.
 %
-% [status, result, scriptFile] = mjsExecuteSshJob(job, varargin)
+% [status, result, scriptFile] = mjsExecuteSsh(job, varargin)
 %
 % 2016-2017 Brainard Lab, University of Pennsylvania
 
