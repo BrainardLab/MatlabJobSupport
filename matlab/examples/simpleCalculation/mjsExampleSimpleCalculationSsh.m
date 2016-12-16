@@ -41,7 +41,27 @@ user = 'ubuntu';
 % private key / identity file for the same user
 identity = '/home/ben/aws/bsh-imac-workstation.pem';
 
+% local file where we can auto-accept remote ssh key
+knownHostsFile = '/home/ben/.ssh/known_hosts';
+
 [status, result, sshScript] = mjsExecuteSsh(job, ...
     'host', host, ...
     'user', user, ...
-    'identity', identity);
+    'identity', identity, ...
+    'knownHostsFile', knownHostsFile);
+
+
+%% Look at the SSH script that was generated.
+%   Let's look at the shell script generated above, by the command
+%   mjsExecuteSsh(job).
+
+fprintf('Generated shell script:\n');
+system(sprintf('cat "%s"', sshScript));
+
+% The first line attempts to auto-accept the public SSH key from the remote
+% host.  This avoids a user prompt to type "yes".
+%
+% The last few lines connect to the remote host via SSH and send in the
+% command that we want to execute using the shell's "<" redirect operator.
+% The file that we send in is a "docker run" script generated for the same
+% job, using mjsWriteDockerRunScript().
