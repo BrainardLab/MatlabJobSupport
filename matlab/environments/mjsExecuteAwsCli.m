@@ -1,4 +1,4 @@
-function [status, result, jobScriptFile, awsScriptFile] = mjsExecuteAwsCli(job, varargin)
+function [status, result, awsCliScriptFile, jobScriptFile] = mjsExecuteAwsCli(job, varargin)
 % Turn a job into a Docker/SSH/AWS CLI shell script, execute it immediately.
 %
 % [status, result, scriptFile] = mjsExecuteAwsCli(job) causes the given
@@ -8,61 +8,51 @@ function [status, result, jobScriptFile, awsScriptFile] = mjsExecuteAwsCli(job, 
 % job.  Returns the execution status code and result.  Also returns the
 % path to the script files that were generated.
 %
-% mjsExecuteAwsCli( ... 'amiId', amiId) specify id of the Amazon Machine
-% Image to use for the new EC2 instance.  The AMI should have Docker and
-% Matlab already installed.
+% mjsExecuteAwsCli( ... 'jobScriptFile', jobScriptFile) specify an
+% existing script file to run on the remote host.  The default is to
+% generate a new script based on the given job.
 %
-% mjsExecuteAwsCli( ... 'instanceType', instanceType) specify the instance
-% type to create.  For Matlab, use at least t2.small, or at least 2GB of
-% memory.
-%
-% mjsExecuteAwsCli( ... 'securityGroups', securityGroups) name of security
-% groups that allow SSH access from here, as well as access to any Matlab
-% license server that's required.
-%
-% mjsExecuteAwsCli( ... 'terminate', terminate) specify whether to
-% terminate the instance after the job fails or completes.  The default is
-% true -- do terminate the instance.
-%
-% mjsExecuteAwsCli( ... 'iamProfile', iamProfile) configure an "IAM"
-% profile for the instance to use.  This an optional way to give the
-% instance access to other AWS resources, like S3.
+% mjsExecuteAwsCli( ... 'dryRun', dryRun) specify whether to skip actual
+% job execution, after generating the job scripts.  The default is false,
+% go ahead and execute the job.
 %
 % mjsExecuteAwsCli( ... 'name', value ...) pass additional parameters to
 % specify how the shell script will configure the container.  For details,
-% see mjsExecuteSsh and mjsWriteDockerRunScript(), which share parameters
-% with this function.
+% see mjsWriteSshScript() and mjsWriteDockerRunScript(), which share
+% parameters with this function.
 %
-% [status, result, scriptFile] = mjsExecuteAwsCli(job, varargin)
+% [status, result, awsCliScriptFile, jobScriptFile] = mjsExecuteAwsCli(job, varargin)
 %
 % 2016-2017 Brainard Lab, University of Pennsylvania
 
 parser = inputParser();
 parser.KeepUnmatched = true;
 parser.addRequired('job', @isstruct);
-parser.addParameter('amiId', '', @ischar);
-parser.addParameter('instanceType', 't2.small', @ischar);
-parser.addParameter('securityGroups', {'default'}, @iscellstr);
-parser.addParameter('terminate', true, @islogical);
-parser.addParameter('iamProfile', '', @ischar);
+parser.addParameter('jobScriptFile', '', @ischar);
+parser.addParameter('dryRun', false, @islogical);
 parser.parse(job, varargin{:});
 job = parser.Results.job;
-amiId = parser.Results.amiId;
-instanceType = parser.Results.instanceType;
-securityGroups = parser.Results.securityGroups;
-terminate = parser.Results.terminate;
-iamProfile = parser.Results.iamProfile;
+jobScriptFile = parser.Results.jobScriptFile;
+dryRun = parser.Results.dryRun;
 
-% I want this to compose mjsExecuteSsh
-% So mjsExecuteSsh should produce a shell script I can re-use use, instead
-% of calling system directly.
-%
-% Then, do I suck that script into a single bigger script?  That would be
-% better for cut and paste of jobs.  Or, do I just call that script from
-% this new script.  That seems cleaner.  In that case, try to put scripts
-% in one folder and zip them up?  That's reasonably transportable, as long
-% as the scripts are mutually-contained.
-%
-% Either way, local, ssh, and awscli should all have two parts: script
-% generation vs script execution.  Or just script generation, and one
-% separate function to execute the last script.
+if isempty(jobScriptFile)
+    % write a script that contains the job and invokes it in Docker
+    jobScriptFile = mjsWriteDockerRunScript(job, varargin{:});
+end
+
+% write a script that sends the first script out over AWS CLI and SSH
+awsCliScriptFile = mjsWriteAwsCliScript(jobScriptFile, varargin{:});
+
+if dryRun
+    status = 0;
+    result = 'dry run';
+    return;
+end
+
+% execute the script we just wrote
+scriptPath = fileparts(awsCliScriptFile);
+if isempty(scriptPath)
+    [status, result] = system(['./' awsCliScriptFile], '-echo');
+else
+    [status, result] = system(awsCliScriptFile, '-echo');
+end

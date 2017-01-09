@@ -6,6 +6,10 @@ function [status, result, scriptFile] = mjsExecuteLocal(job, varargin)
 % execution status code and result.  Also returns the path to the script
 % file that was generated.
 %
+% mjsExecuteLocal( ... 'dryRun', dryRun) specify whether to skip actual job
+% execution, after generating the job script.  The default is false, go
+% ahead and execute the job.
+%
 % mjsExecuteLocal( ... 'name', value ...) pass additional parameters to
 % specify how the shell script will configure the container.  For details,
 % see mjsWriteDockerRunScript(), which takes the same parameters.
@@ -17,11 +21,19 @@ function [status, result, scriptFile] = mjsExecuteLocal(job, varargin)
 parser = inputParser();
 parser.KeepUnmatched = true;
 parser.addRequired('job', @isstruct);
+parser.addParameter('dryRun', false, @islogical);
 parser.parse(job, varargin{:});
 job = parser.Results.job;
+dryRun = parser.Results.dryRun;
 
 % write a script that contains the whole job
 scriptFile = mjsWriteDockerRunScript(job, varargin{:});
+
+if dryRun
+    status = 0;
+    result = 'dry run';
+    return;
+end
 
 % execute the script we just wrote
 scriptPath = fileparts(scriptFile);

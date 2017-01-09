@@ -1,4 +1,4 @@
-function scriptFile = mjsWriteDockerRunScript(varargin)
+function scriptFile = mjsWriteDockerRunScript(job, varargin)
 % Write a shell script that will invoke a given job in Docker.
 %
 % This saves us from having to write lots of Docker syntax by hand.  This
@@ -10,7 +10,7 @@ function scriptFile = mjsWriteDockerRunScript(varargin)
 % and Docker installed.  The rest should "just work".  At least, that is
 % the goal.
 %
-% scriptFile = mjsWriteDockerRunScript(varargin)
+% scriptFile = mjsWriteDockerRunScript(job, varargin)
 %
 % 2016-2017 Brainard Lab, University of Pennsylvania
 
@@ -31,7 +31,7 @@ parser.addParameter('commonToolboxDir', '', @ischar);
 parser.addParameter('inputDir', '', @ischar);
 parser.addParameter('outputDir', '', @ischar);
 parser.addParameter('workingDir', '', @ischar);
-parser.parse(varargin{:});
+parser.parse(job, varargin{:});
 job = parser.Results.job;
 scriptFile = parser.Results.scriptFile;
 dockerImage = parser.Results.dockerImage;
