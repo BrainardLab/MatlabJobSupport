@@ -36,6 +36,7 @@ parser = inputParser();
 parser.KeepUnmatched = true;
 parser.addRequired('jobScriptFile', @ischar);
 parser.addParameter('sshScriptFile', '', @ischar);
+parser.addParameter('sshScriptFid', [], @isnumeric);
 parser.addParameter('host', 'localhost', @ischar);
 parser.addParameter('port', [], @isnumeric);
 parser.addParameter('user', '', @ischar);
@@ -44,6 +45,7 @@ parser.addParameter('knownHostsFile', '', @ischar);
 parser.parse(jobScriptFile, varargin{:});
 jobScriptFile = parser.Results.jobScriptFile;
 sshScriptFile = parser.Results.sshScriptFile;
+sshScriptFid = parser.Results.sshScriptFid;
 host = parser.Results.host;
 port = parser.Results.port;
 user = parser.Results.user;
@@ -68,7 +70,12 @@ if ~isempty(scriptDir) && 7 ~= exist(scriptDir, 'dir')
     mkdir(scriptDir);
 end
 
-fid = fopen(sshScriptFile, 'w');
+if isempty(sshScriptFid)
+    fid = fopen(sshScriptFile, 'w');
+else
+    % allow writing to an already-open file
+    fid = sshScriptFid;
+end
 if -1 == fid
     error('mjsWriteSshScript:fopen', ...
         'Could not open file <%s> for writing.', sshScriptFile);
