@@ -60,7 +60,8 @@ fprintf('Docker execution had status %d (0 is good.).\n', status);
 fprintf('Generated shell script:\n');
 system(sprintf('cat "%s"', localScript));
 
-% The first line contains a JSON representation of the job struct.
+% First we embed the job struct as a JSON string in the script.  This
+% should make the script portable and cut-and-pasteable.
 %
 % The next four lines locate the Matlab installation on the host.
 %
