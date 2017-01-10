@@ -41,7 +41,9 @@ if isempty(jobScriptFile)
 end
 
 % write a script that sends the first script out over AWS CLI and SSH
-awsCliScriptFile = mjsWriteAwsCliScript(jobScriptFile, varargin{:});
+awsCliScriptFile = mjsWriteAwsCliScript(jobScriptFile, ...
+    varargin{:}, ...
+    'diskGB', job.diskGB);
 
 if dryRun
     status = 0;
