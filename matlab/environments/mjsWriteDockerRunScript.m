@@ -21,6 +21,7 @@ parser.addParameter('scriptFile', '', @ischar);
 parser.addParameter('dockerImage', 'ninjaben/mjs-base', @ischar);
 parser.addParameter('dockerOptions', '--rm', @ischar);
 parser.addParameter('dockerNetwork', '--net=host', @ischar);
+parser.addParameter('mountDockerSocket', false, @islogical);
 parser.addParameter('toolboxToolboxFlavor', '', @ischar);
 parser.addParameter('toolboxToolboxDir', '', @ischar);
 parser.addParameter('toolboxesDir', '', @ischar);
@@ -37,6 +38,7 @@ scriptFile = parser.Results.scriptFile;
 dockerImage = parser.Results.dockerImage;
 dockerOptions = parser.Results.dockerOptions;
 dockerNetwork = parser.Results.dockerNetwork;
+mountDockerSocket = parser.Results.mountDockerSocket;
 toolboxToolboxFlavor = parser.Results.toolboxToolboxFlavor;
 toolboxToolboxDir = parser.Results.toolboxToolboxDir;
 toolboxesDir = parser.Results.toolboxesDir;
@@ -117,6 +119,10 @@ try
     fprintf(fid, '# using conventions established in ninjaben/mjs-base\n');
     fprintf(fid, 'docker run %s %s \\\n', dockerOptions, dockerNetwork);
     fprintf(fid, '  -v "$MATLAB_DIR":/usr/local/MATLAB/from-host \\\n');
+    
+    if mountDockerSocket
+        fprintf(fid, '  -v /var/run/docker.sock:/var/run/docker.sock \\\n');
+    end
     
     if ~isempty(toolboxToolboxDir)
         fprintf(fid, '  -v "%s":/mjs/ToolboxToolbox \\\n', toolboxToolboxDir);

@@ -51,7 +51,9 @@ mjsRunJob(job);
 %   machine, into the Docker container.  So Matlab is initially confused by
 %   the new environment.
 
-[status, result, localScript] = mjsExecuteLocal(job);
+[status, result, localScript] = mjsExecuteLocal(job, ...
+    'dockerImage', 'ninjaben/mjs-docker', ...
+    'mountDockerSocket', true);
 fprintf('Docker execution had status %d (0 is good.).\n', status);
 
 fprintf('Shell script generated for local machine:\n');
@@ -72,7 +74,10 @@ system(sprintf('cat "%s"', localScript));
 %   value for the container's 'toolboxToolboxDir'.
 
 jenkinsScript = mjsWriteDockerRunScript(job, ...
-    'toolboxToolboxDir', '$WORKSPACE');
+    'toolboxToolboxDir', '$WORKSPACE', ...
+    'dockerImage', 'ninjaben/mjs-docker', ...
+    'mountDockerSocket', true, ...
+    'dryRun', true);
 
 fprintf('Shell script for remote Jenkins server:\n');
 system(sprintf('cat "%s"', jenkinsScript));

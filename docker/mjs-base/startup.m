@@ -43,7 +43,7 @@ toolboxCommonRoot = '/opt/toolboxes';
 setpref('ToolboxToolbox', 'toolboxCommonRoot', toolboxCommonRoot);
 
 % default folder for hooks that set up local config for each toolbox
-localHookFolder = fullfile(tbUserFolder(), '/mjs/toolboxHooks');
+localHookFolder = '/mjs/toolboxHooks';
 setpref('ToolboxToolbox', 'localHookFolder', localHookFolder);
 
 % % location of ToolboxHub or other toolbox registry
