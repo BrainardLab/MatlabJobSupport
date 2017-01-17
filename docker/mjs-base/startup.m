@@ -66,7 +66,7 @@ tbUse('MatlabJobSupport');
 %% Add input dir to Matlab path.
 inputDir = getenv('INPUT_DIR');
 if ~isempty(inputDir) && 7 == exist(inputDir, 'dir')
-    tbAddToolboxPath('toolboxPath', inputDir);
+    tbAddToPath(inputDir);
 end
 
 
