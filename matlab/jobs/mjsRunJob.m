@@ -22,11 +22,8 @@ if ~isempty(job.setupCommand)
     doCommand(job.setupCommand, 'setup');
 end
 
-if ~isempty(job.tbUseArgs)
-    argString = strtrim(evalc('disp(job.tbUseArgs)'));
-    printTimestamp('...doing tbUse() with args <%s>', argString);
-    tbUse(job.tbUseArgs{:});
-    printTimestamp('...did tbUse()');
+if ~isempty(job.toolboxCommand)
+    doCommand(job.toolboxCommand, 'toolbox');
 end
 
 %% The job.

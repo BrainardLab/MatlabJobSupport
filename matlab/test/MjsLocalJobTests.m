@@ -155,7 +155,7 @@ classdef MjsLocalJobTests < matlab.unittest.TestCase
             
             % make a job that uses the same toolbox
             job = testCase.integerSaverJob();
-            job.tbUseArgs = {'sample-repo'};
+            job.toolboxCommand = {@tbUse, 'sample-repo'};
             
             % run the job with the shared toolbox folder mapped in
             [status, result] = mjsExecuteLocal(job, ...
