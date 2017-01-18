@@ -21,6 +21,7 @@ jobFile = parser.Results.jobFile;
 
 %% Can't serialize function handles to json.
 job.setupCommand = commandFunctionToString(job.setupCommand);
+job.toolboxCommand = commandFunctionToString(job.toolboxCommand);
 job.jobCommand = commandFunctionToString(job.jobCommand);
 job.cleanupCommand = commandFunctionToString(job.cleanupCommand);
 
