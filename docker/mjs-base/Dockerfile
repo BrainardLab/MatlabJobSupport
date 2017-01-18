@@ -11,6 +11,7 @@
 # Directories inside the container:
 #  - /mjs -- startup.m, initial dir for container startup
 #  - /mjs/ToolboxToolbox -- the ToolboxToolbox
+#  - /mjs/projects -- projects that can be deployed with ToolboxToolbox
 #  - /mjs/toolboxes -- toolboxes installed by the ToolboxToolbox
 #  - /mjs/toolboxes/ToolboxRegistry -- registry of toolboxes known to ToolboxToolbox
 #  - /mjs/toolboxes/MatlabJobSupport -- MatlabJobSupport itself
@@ -66,6 +67,7 @@ RUN apt-get update && apt-get install -y \
 ### ToolboxToolbox
 WORKDIR /mjs
 RUN git clone https://github.com/ToolboxHub/ToolboxToolbox.git
+
 WORKDIR /mjs/toolboxes
 RUN git clone https://github.com/ToolboxHub/ToolboxRegistry.git
 RUN git clone https://github.com/BrainardLab/MatlabJobSupport.git
@@ -77,6 +79,7 @@ RUN mkdir -p /usr/local/MATLAB/from-host
 RUN mkdir -p /var/log/matlab
 RUN mkdir -p /opt/toolboxes
 RUN mkdir -p /var/mjs
+RUN mkdir -p /mjs/projects
 
 
 ### start in known dir so that Matlab can find startup.m
