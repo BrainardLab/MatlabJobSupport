@@ -25,6 +25,7 @@ parser.addParameter('mountDockerSocket', false, @islogical);
 parser.addParameter('toolboxToolboxFlavor', '', @ischar);
 parser.addParameter('toolboxToolboxDir', '', @ischar);
 parser.addParameter('toolboxesDir', '', @ischar);
+parser.addParameter('projectsDir', '', @ischar);
 parser.addParameter('toolboxHooksDir', '', @ischar);
 parser.addParameter('matlabDir', '', @ischar);
 parser.addParameter('logDir', '', @ischar);
@@ -42,6 +43,7 @@ mountDockerSocket = parser.Results.mountDockerSocket;
 toolboxToolboxFlavor = parser.Results.toolboxToolboxFlavor;
 toolboxToolboxDir = parser.Results.toolboxToolboxDir;
 toolboxesDir = parser.Results.toolboxesDir;
+projectsDir = parser.Results.projectsDir;
 toolboxHooksDir = parser.Results.toolboxHooksDir;
 matlabDir = parser.Results.matlabDir;
 logDir = parser.Results.logDir;
@@ -130,6 +132,10 @@ try
     
     if ~isempty(toolboxesDir)
         fprintf(fid, '  -v "%s":/mjs/toolboxes \\\n', toolboxesDir);
+    end
+    
+    if ~isempty(projectsDir)
+        fprintf(fid, '  -v "%s":/mjs/projects \\\n', projectsDir);
     end
     
     if ~isempty(toolboxHooksDir)
