@@ -74,7 +74,7 @@ RUN git clone https://github.com/BrainardLab/MatlabJobSupport.git
 
 
 ### Matlab startup.m and the dirs that it expects to exist
-COPY startup.m /mjs/startup.m
+COPY mjs-startup.m /mjs/startup.m
 RUN mkdir -p /usr/local/MATLAB/from-host
 RUN mkdir -p /var/log/matlab
 RUN mkdir -p /opt/toolboxes

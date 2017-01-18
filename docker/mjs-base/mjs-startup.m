@@ -23,6 +23,7 @@
 %
 % 2016-2017 benjamin.heasly@gmail.com
 
+
 %% Locate an dupdate ToolboxToolbox.
 toolboxToolboxDir = '/mjs/ToolboxToolbox';
 
@@ -64,19 +65,19 @@ end
 
 % % default folder to contain regular the toolboxes
 toolboxRoot = '/mjs/toolboxes';
-% setpref('ToolboxToolbox', 'toolboxRoot', toolboxRoot);
+setpref('ToolboxToolbox', 'toolboxRoot', toolboxRoot);
 
 % % default folder to contain shared, pre-installed toolboxes
 toolboxCommonRoot = '/opt/toolboxes';
-% setpref('ToolboxToolbox', 'toolboxCommonRoot', toolboxCommonRoot);
+setpref('ToolboxToolbox', 'toolboxCommonRoot', toolboxCommonRoot);
 
 % % default folder to contain non-toolbox projects
 projectRoot = '/mjs/projects';
-% setpref('ToolboxToolbox', 'projectRoot', projectRoot);
+setpref('ToolboxToolbox', 'projectRoot', projectRoot);
 
 % % default folder for hooks that set up local config for each toolbox
 localHookFolder = '/mjs/toolboxHooks';
-% setpref('ToolboxToolbox', 'localHookFolder', localHookFolder);
+setpref('ToolboxToolbox', 'localHookFolder', localHookFolder);
 
 % % location of ToolboxHub or other toolbox registry
 % registry = tbDefaultRegistry();
