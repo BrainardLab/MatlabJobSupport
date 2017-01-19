@@ -40,7 +40,9 @@ mjsRunJob(job);
 [~, ~, projectsDir] = tbLocateProject('IBIOColorDetect');
 [status, result, localScript] = mjsExecuteLocal(job, ...
     'projectsDir', projectsDir, ...
-    'javaDir', 'bundled');
+    'javaDir', 'bundled', ...
+    'dockerNetwork', '--mac-address="e8:06:88:cb:c5:fe"', ...
+    'matlabDir', '/Users/ben/Desktop/linux-matlab/MatlabTree/MATLAB/R2016b');
 
 fprintf('Docker execution had status %d (0 is good.).\n', status);
 fprintf('\n');
@@ -53,18 +55,19 @@ system(sprintf('cat "%s"', localScript));
 %   continuous testing of the IBIOColorDetect code.
 %
 %   The Jenkins server knows how to check out branches of the
-%   IBIOColorDetect code from GitHub, into a folder called the WORKSPACE.
+%   IBIOColorDetect code from GitHub, into a pre-defined workspace folder.
 %
-%   We need to mount in the WORKSPACE as the projects folder so that
+%   We need to mount in the workspace as the projects folder so that
 %   ToolboxToolbox can access IBIOColorDetect from inside the container.
 
+jenkinsWorkspace = '/var/lib/jenkins/workspace';
 jenkinsScript = mjsWriteDockerRunScript(job, ...
     'javaDir', 'bundled', ...
-    'projectsDir', '$WORKSPACE');
+    'projectsDir', jenkinsWorkspace);
 
 fprintf('Shell script for remote Jenkins server:\n');
 system(sprintf('cat "%s"', jenkinsScript));
-fprintf('The special line for Jenkins is the one with "-v "$WORKSPACE".\n');
+fprintf('The special line for Jenkins is the one with "-v "/var/lib/jenkins/workspace".\n');
 
 
 %% Install in Jenkins.
