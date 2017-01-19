@@ -37,11 +37,13 @@ mjsRunJob(job);
 %   so that ToolboxToolbox can access IBIOColorDetect from inside the
 %   container.
 
-projectRoot = tbGetPref('projectRoot', '');
+[~, ~, projectsDir] = tbLocateProject('IBIOColorDetect');
 [status, result, localScript] = mjsExecuteLocal(job, ...
-    'projectsDir', projectRoot);
+    'projectsDir', projectsDir, ...
+    'javaDir', 'bundled');
 
 fprintf('Docker execution had status %d (0 is good.).\n', status);
+fprintf('\n');
 fprintf('Shell script generated for local machine:\n');
 system(sprintf('cat "%s"', localScript));
 
@@ -56,9 +58,9 @@ system(sprintf('cat "%s"', localScript));
 %   We need to mount in the WORKSPACE as the projects folder so that
 %   ToolboxToolbox can access IBIOColorDetect from inside the container.
 
-projectRoot = '$WORKSPACE';
 jenkinsScript = mjsWriteDockerRunScript(job, ...
-    'projectsDir', projectRoot);
+    'javaDir', 'bundled', ...
+    'projectsDir', '$WORKSPACE');
 
 fprintf('Shell script for remote Jenkins server:\n');
 system(sprintf('cat "%s"', jenkinsScript));
