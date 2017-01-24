@@ -44,8 +44,11 @@ function awsCliScriptFile = mjsWriteAwsCliScript(jobScriptFile, varargin)
 %
 % 2016-2017 Brainard Lab, University of Pennsylvania
 
+arguments = mjsIncludeEnvironmentProfile(varargin{:});
+
 parser = inputParser();
 parser.KeepUnmatched = true;
+parser.StructExpand = true;
 parser.addRequired('jobScriptFile', @ischar);
 parser.addParameter('awsCliScriptFile', '', @ischar);
 parser.addParameter('amiId', '', @ischar);
@@ -55,7 +58,7 @@ parser.addParameter('terminate', true, @islogical);
 parser.addParameter('iamProfile', '', @ischar);
 parser.addParameter('identity', '', @ischar);
 parser.addParameter('diskGB', [], @isnumeric);
-parser.parse(jobScriptFile, varargin{:});
+parser.parse(jobScriptFile, arguments{:});
 jobScriptFile = parser.Results.jobScriptFile;
 awsCliScriptFile = parser.Results.awsCliScriptFile;
 amiId = parser.Results.amiId;
@@ -169,7 +172,7 @@ try
     %   this is the fun part!
     fprintf(fid, '\n\n');
     mjsWriteSshScript(jobScriptFile, ...
-        varargin{:}, ...
+        arguments{:}, ...
         'host', '$INSTANCE_DNS_NAME', ...
         'sshScriptFid', fid);
     

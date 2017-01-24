@@ -18,16 +18,19 @@ function [status, result, scriptFile] = mjsExecuteLocal(job, varargin)
 %
 % 2016-2017 Brainard Lab, University of Pennsylvania
 
+arguments = mjsIncludeEnvironmentProfile(varargin{:});
+
 parser = inputParser();
 parser.KeepUnmatched = true;
+parser.StructExpand = true;
 parser.addRequired('job', @isstruct);
 parser.addParameter('dryRun', false, @islogical);
-parser.parse(job, varargin{:});
+parser.parse(job, arguments{:});
 job = parser.Results.job;
 dryRun = parser.Results.dryRun;
 
 % write a script that contains the whole job
-scriptFile = mjsWriteDockerRunScript(job, varargin{:});
+scriptFile = mjsWriteDockerRunScript(job, arguments{:});
 
 if dryRun
     status = 0;

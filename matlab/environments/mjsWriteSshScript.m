@@ -32,8 +32,11 @@ function sshScriptFile = mjsWriteSshScript(jobScriptFile, varargin)
 %
 % 2016-2017 Brainard Lab, University of Pennsylvania
 
+arguments = mjsIncludeEnvironmentProfile(varargin{:});
+
 parser = inputParser();
 parser.KeepUnmatched = true;
+parser.StructExpand = true;
 parser.addRequired('jobScriptFile', @ischar);
 parser.addParameter('sshScriptFile', '', @ischar);
 parser.addParameter('sshScriptFid', [], @isnumeric);
@@ -42,7 +45,7 @@ parser.addParameter('port', [], @isnumeric);
 parser.addParameter('user', '', @ischar);
 parser.addParameter('identity', '', @ischar);
 parser.addParameter('knownHostsFile', '', @ischar);
-parser.parse(jobScriptFile, varargin{:});
+parser.parse(jobScriptFile, arguments{:});
 jobScriptFile = parser.Results.jobScriptFile;
 sshScriptFile = parser.Results.sshScriptFile;
 sshScriptFid = parser.Results.sshScriptFid;

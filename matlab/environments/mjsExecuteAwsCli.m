@@ -25,24 +25,27 @@ function [status, result, awsCliScriptFile, jobScriptFile] = mjsExecuteAwsCli(jo
 %
 % 2016-2017 Brainard Lab, University of Pennsylvania
 
+arguments = mjsIncludeEnvironmentProfile(varargin{:});
+
 parser = inputParser();
 parser.KeepUnmatched = true;
+parser.StructExpand = true;
 parser.addRequired('job', @isstruct);
 parser.addParameter('jobScriptFile', '', @ischar);
 parser.addParameter('dryRun', false, @islogical);
-parser.parse(job, varargin{:});
+parser.parse(job, arguments{:});
 job = parser.Results.job;
 jobScriptFile = parser.Results.jobScriptFile;
 dryRun = parser.Results.dryRun;
 
 if isempty(jobScriptFile)
     % write a script that contains the job and invokes it in Docker
-    jobScriptFile = mjsWriteDockerRunScript(job, varargin{:});
+    jobScriptFile = mjsWriteDockerRunScript(job, arguments{:});
 end
 
 % write a script that sends the first script out over AWS CLI and SSH
 awsCliScriptFile = mjsWriteAwsCliScript(jobScriptFile, ...
-    varargin{:}, ...
+    arguments{:}, ...
     'diskGB', job.diskGB);
 
 if dryRun
