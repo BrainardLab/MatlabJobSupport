@@ -31,18 +31,18 @@ parser.StructExpand = true;
 parser.addRequired('job', @isstruct);
 parser.addParameter('jobScriptFile', '', @ischar);
 parser.addParameter('dryRun', false, @islogical);
-parser.parse(job, arguments{:});
+parser.parse(job, arguments);
 job = parser.Results.job;
 jobScriptFile = parser.Results.jobScriptFile;
 dryRun = parser.Results.dryRun;
 
 if isempty(jobScriptFile)
     % write a script that contains the job and invokes it in Docker
-    jobScriptFile = mjsWriteDockerRunScript(job, arguments{:});
+    jobScriptFile = mjsWriteDockerRunScript(job, arguments);
 end
 
 % write a script that sends the first script out over SSH
-sshScriptFile = mjsWriteSshScript(jobScriptFile, arguments{:});
+sshScriptFile = mjsWriteSshScript(jobScriptFile, arguments);
 
 if dryRun
     status = 0;

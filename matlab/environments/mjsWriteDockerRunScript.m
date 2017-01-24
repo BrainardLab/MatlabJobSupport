@@ -37,7 +37,7 @@ parser.addParameter('commonToolboxDir', '', @ischar);
 parser.addParameter('inputDir', '', @ischar);
 parser.addParameter('outputDir', '', @ischar);
 parser.addParameter('workingDir', '', @ischar);
-parser.parse(job, arguments{:});
+parser.parse(job, arguments);
 job = parser.Results.job;
 scriptFile = parser.Results.scriptFile;
 dockerImage = parser.Results.dockerImage;

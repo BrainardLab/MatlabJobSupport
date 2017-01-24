@@ -58,7 +58,7 @@ parser.addParameter('terminate', true, @islogical);
 parser.addParameter('iamProfile', '', @ischar);
 parser.addParameter('identity', '', @ischar);
 parser.addParameter('diskGB', [], @isnumeric);
-parser.parse(jobScriptFile, arguments{:});
+parser.parse(jobScriptFile, arguments);
 jobScriptFile = parser.Results.jobScriptFile;
 awsCliScriptFile = parser.Results.awsCliScriptFile;
 amiId = parser.Results.amiId;
@@ -172,7 +172,7 @@ try
     %   this is the fun part!
     fprintf(fid, '\n\n');
     mjsWriteSshScript(jobScriptFile, ...
-        arguments{:}, ...
+        arguments, ...
         'host', '$INSTANCE_DNS_NAME', ...
         'sshScriptFid', fid);
     

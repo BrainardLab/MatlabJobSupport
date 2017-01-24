@@ -45,7 +45,7 @@ parser.addParameter('port', [], @isnumeric);
 parser.addParameter('user', '', @ischar);
 parser.addParameter('identity', '', @ischar);
 parser.addParameter('knownHostsFile', '', @ischar);
-parser.parse(jobScriptFile, arguments{:});
+parser.parse(jobScriptFile, arguments);
 jobScriptFile = parser.Results.jobScriptFile;
 sshScriptFile = parser.Results.sshScriptFile;
 sshScriptFid = parser.Results.sshScriptFid;

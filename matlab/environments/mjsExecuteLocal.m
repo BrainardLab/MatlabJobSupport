@@ -25,12 +25,12 @@ parser.KeepUnmatched = true;
 parser.StructExpand = true;
 parser.addRequired('job', @isstruct);
 parser.addParameter('dryRun', false, @islogical);
-parser.parse(job, arguments{:});
+parser.parse(job, arguments);
 job = parser.Results.job;
 dryRun = parser.Results.dryRun;
 
 % write a script that contains the whole job
-scriptFile = mjsWriteDockerRunScript(job, arguments{:});
+scriptFile = mjsWriteDockerRunScript(job, arguments);
 
 if dryRun
     status = 0;

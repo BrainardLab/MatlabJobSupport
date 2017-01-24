@@ -1,7 +1,7 @@
-% Create a job and Docker run script for testing the ToolboxToolbox.
+% Create a job and Docker run script for validating isetbio.
 %
-% This script will produce a job struct suitable for running all the unit
-% tests for the ToolboxToolbox.
+% This script will produce a job struct suitable for running all the
+% UnitTestToolbox validations for isetbio.
 %
 % It will produce a shell script suitable for running the tests locally,
 % and another script suitable for running the tests on Jenkins.
@@ -12,24 +12,24 @@ clear;
 clc;
 
 %% The job we want to run.
-%   cd to the folder that contains the ToolboxToolbox tests
+%   deploy isetbio
 %   invoke the test runner function
 
 job = mjsJob( ...
-    'name', 'testToolboxToolbox', ...
-    'setupCommand', 'cd(fileparts(which(''tbAssertTestsPass'')))', ...
-    'jobCommand', 'tbAssertTestsPass');
+    'name', 'validateIsetbio', ...
+    'toolboxCommand', 'tbUse(''isetbio'')', ...
+    'jobCommand', 'ieValidateFullAllAssert');
 
 
 %% Run the job in a Docker container on this machine.
 %   "dockerImage" "...:latest" to auto-update the mjs docker image
-%   "mountDockerSocket" to use docker from inside the docker container
+%   "javaDir" to set up Java/gradle/RemoteDataToolbox in the container
 %   "dryRun" in case you don't want to run the tests yet
 
 [status, result, localScript] = mjsExecuteLocal(job, ...
     'profile', 'local', ...
-    'dockerImage', 'ninjaben/mjs-docker:latest', ...
-    'mountDockerSocket', true, ...
+    'dockerImage', 'ninjaben/mjs-base:latest', ...
+    'javaDir', 'bundled', ...
     'dryRun', true);
 
 fprintf('Local shell script:\n');
@@ -37,14 +37,11 @@ system(sprintf('cat "%s"', localScript));
 
 
 %% Generate a shell script to be run on a remote Jenkins server.
-%	"toolboxToolboxDir" to use the version of ToolboxToolbox that Jenkins
-%	is trying to test, instead of the default version in the docker image
+%	"commonToolboxDir" to use the version of isetbio that Jenkins
+%	is trying to test, instead of the default version from tbUse()
 
 jenkinsScript = mjsWriteDockerRunScript(job, ...
     'profile', 'jenkins', ...
-    'toolboxToolboxDir', '$WORKSPACE', ...
-    'dockerImage', 'ninjaben/mjs-docker:latest', ...
-    'mountDockerSocket', true, ...
     'dryRun', true);
 
 fprintf('Jenkins shell script:\n');

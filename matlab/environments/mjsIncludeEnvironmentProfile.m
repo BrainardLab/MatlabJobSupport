@@ -3,11 +3,12 @@ function arguments = mjsIncludeEnvironmentProfile(varargin)
 %
 % arguments = mjsIncludeEnvironmentProfile(varargin) scans the given
 % varargin for a parameter named 'profile'.  If found, loads the
-% environment profile with that name and returns an updated argument list
+% environment profile with that name and returns an argument struct
 % that includes the profile as well as the given varargin.
 %
 % If varargin contains no 'profile' parameter, or if the named profile
-% isn't found, returns varargin as-is.
+% isn't found, returns the an argument struct with just the name-value
+% pairs from the given varargin.
 %
 % arguments = mjsIncludeEnvironmentProfile(varargin)
 %
@@ -22,13 +23,13 @@ profileName = parser.Results.profile;
 
 %% Check for a named profile.
 if isempty(profileName)
-    arguments = varargin;
+    arguments = parser.Unmatched;
     return;
 end
 
 profile = mjsGetEnvironmentProfile(profileName);
 if isempty(profile)
-    arguments = varargin;
+    arguments = parser.Unmatched;
     return;
 end
 
