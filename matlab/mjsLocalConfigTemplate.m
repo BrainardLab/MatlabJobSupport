@@ -28,7 +28,7 @@ function mjsLocalConfigTemplate()
 if ismac()
     mjsSetEnvironmetProfile('local', ...
         'matlabDir', 'where is linux matlab installation?', ...
-        'dockerNetwork', 'what is linux matlab mac address?');
+        'dockerNetwork', '--mac-address="what is linux matlab mac address?"');
 end
 
 
