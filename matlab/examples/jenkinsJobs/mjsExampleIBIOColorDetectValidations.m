@@ -39,8 +39,6 @@ system(sprintf('cat "%s"', localScript));
 
 
 %% Generate a shell script to be run on a remote Jenkins server.
-%   "projectsDir" to mount the version of IBIOColorDetect that Jenkins is
-%   trying to test into the container
 
 jenkinsScript = mjsWriteDockerRunScript(job, ...
     'profile', 'jenkins', ...

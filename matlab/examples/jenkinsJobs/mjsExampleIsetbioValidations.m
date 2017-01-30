@@ -37,8 +37,6 @@ system(sprintf('cat "%s"', localScript));
 
 
 %% Generate a shell script to be run on a remote Jenkins server.
-%	"commonToolboxDir" to use the version of isetbio that Jenkins
-%	is trying to test, instead of the default version from tbUse()
 
 jenkinsScript = mjsWriteDockerRunScript(job, ...
     'profile', 'jenkins', ...
