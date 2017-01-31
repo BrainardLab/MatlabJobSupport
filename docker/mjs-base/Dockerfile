@@ -82,6 +82,15 @@ RUN mkdir -p /var/mjs
 RUN mkdir -p /mjs/projects
 
 
+### Start with fresh Matlab preferences
+RUN mkdir -p /var/mjs/matlab_prefdir
+ENV MATLAB_PREFDIR=/var/mjs/matlab_prefdir
+
+
+### Start with fresh Matlab Path
+COPY mjs-pathdef.m /mjs/pathdef.m
+
+
 ### start in known dir so that Matlab can find startup.m
 WORKDIR /mjs
 ENV PATH="/usr/local/MATLAB/from-host/bin:${PATH}"

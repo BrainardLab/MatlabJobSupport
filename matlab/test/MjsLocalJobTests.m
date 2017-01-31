@@ -172,5 +172,29 @@ classdef MjsLocalJobTests < matlab.unittest.TestCase
             testCase.assertNotEmpty(messageIndex);
         end
         
+        function testOutputOwner(testCase)
+            [job, intValue, outputFile] = testCase.integerSaverJob();
+            status = mjsExecuteLocal(job, ...
+                'scriptFile', fullfile(testCase.tempDir, 'scripts', [job.name '.sh']), ...
+                'outputDir', testCase.tempDir, ...
+                'outputOwner', 'current');
+            testCase.assertEqual(status, 0);
+
+            % output file should contain expected data
+            testCase.assertEqual(exist(outputFile, 'file'), 2);
+            jobOutput = load(outputFile);
+            testCase.assertEqual(jobOutput.intValue, intValue);
+            
+            % who is the current user?
+            [~, currentUser] = system('whoami');
+            currentUser = strtrim(currentUser);
+            
+            % output file should be owned by current user
+            [~, outputInfo] = system(['ls -l ' outputFile]);
+            ouputInfoParts = strsplit(outputInfo);
+            outputOwner = ouputInfoParts{3};
+            testCase.assertEqual(outputOwner, currentUser);
+        end
+        
     end
 end
