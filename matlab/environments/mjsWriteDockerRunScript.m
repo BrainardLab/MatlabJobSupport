@@ -206,7 +206,7 @@ try
             fprintf(fid, 'OUTPUT_OWNER="$(whoami)"\n');
         elseif ~isempty(outputOwner)
             fprintf(fid, '# let this user own the output.\n');
-            fprintf(fid, 'OUTPUT_OWNER="%s"\n', dockerUser);
+            fprintf(fid, 'OUTPUT_OWNER="%s"\n', outputOwner);
         end
         fprintf(fid, 'OUTPUT_UID="$(id -u $OUTPUT_OWNER)"\n');
         
