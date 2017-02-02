@@ -1,78 +1,37 @@
 # MatlabJobSupport
 Scripts and Docker images to support Matlab jobs including batch, distributed, and test jobs.
 
-This is a work in progress.  I'm starting with design notes.  More to come.
+This is a work in progress.
 
 # Overview
 The goal of this project is to make it easier to pack up Matlab work as a "job", and to support job executions in several environments, like:
  - locally in a Docker container
- - remotely in a Docker container
- - remotely in a Kubernetes pod
+ - remotely in a Docker container, via SSH
+ - remotely in a Docker container, on a short-lived AWS EC2 instance
+ - Others?  Kubernetes?  AWS ECS?  Docker Swarm?
  
-We can do this with a combination of Matlab scripts and Docker images.  The scripts will help us declare jobs to be executed and resources needed.  The scripts will also encapsulate the complicated syntax required to invoke Docker and Kubernetes.  The Docker images will provide portable, isolated execution environments where jobs can run.
+We can do this with a combination of Matlab functions and Docker images.  The functions will help us declare jobs to be executed and resources needed.  They will also generate the complicated syntax required to invoke Docker, SSH, and AWS.
 
-# Scripts
-Here are some scripts that I think we'll want.  I'll try to point out what they do, and conventions they establish for working together.
+The Docker images will provide portable, isolated execution environments where jobs can run, and conventions for organzing files configuring Matlab toolboxes.
 
-## Matlab Job Declaration
-This will make jobs declarative.  We need to be able to define each job in terms of arguments passed to this function.  This will let us create a portable job data structure that includes everything we need to know.  This is how we will defer execution until the job is scheduled to run somewhere.  It is also the thing that we will transform into complicated syntax suitable for execution in a partiular environment.
-
-## Matlab Job Running
-Each job running script will start with a job data structure, transform it into syntax appropriate for a particular execution environment, and possibly try to invoke the syntax to make the job to run.
-
-I imagine we will have several of these, each aimed at a specific execution environment.  For starters:
- - run in a Docker container on the local host
- - run in a Docker container on a remote host, via SSH (assumes host and credentials have been configured)
- - run in a Docker container on a temporary AWS instance, via AWS CLI and SSH (assumes AWS CLI has been configured)
- - run in a Kubernetes pod (assumes kubectl has been configured)
+# Jobs
+We have some Matlab functions for working with [jobs](matlab/jobs) in Matlab.  These help do things like:
+ - Declare a job of work as a Matlab struct.
+ - Save/load jobs to/from JSON.
+ - Execute the job in Matlab and exit with a status code that indicates job success.
  
-Each of these will differ by various, devious, complicated syntax.  But eventually each one needs to cause matlab to be run inside a Docker container based on the Matlab Support image.  Therefore, the last step for each of these can be the same: invoke Matlab and pass a job declaration to a standard executor function.
+# Environments
+We have some separate Matlab functions for getting jobs to be executed in various [environments](matlab/environments), like locally, via SSH, or on a short-lived AWS EC2 instance.
 
-# Docker Images
-I think all jobs should run inside Docker containers.  This will give us the chance to establish a portable, consistent execution environment.  It will also give us the chance to choose conventions for things like how the file system should be arranged and where Matlab should look for job-specefic scripts and resource files.
+Each of these functions takes in a job and writes out a shell script that includes an embedded job definition plus commands for launching Matlab to execute the job.  Since the scripts embed their job definitions, they are portable and complete.
 
-## Matlab Support
-This will be the base image for all MatlabJobSupport jobs.  It will establish a minimal execution environment and most of the conventions for how to arrange files and invoke jobs.
+# Examples
+We have several [examples](matlab/examples) of working with jobs and execution environments.  Some of these demonstrate a simple calculation which can be carried out locally, via SSH, or on a short-lived AWS EC2 instance.
 
-This image will be responsible for:
- - installing system dependencies required for Matlab execution
- - installing the ToolboxToolbox for managing Matlab toolbox dependencies
- - including MatlabJobSupport itself, as a toolbox that can be kept up to date
- - convention for "mounting in" the Matlab installation from the Docker host
- - convention for invoking the container with "host" netowrking, to satsfy the Matlab license
- - convention for "mounting in" a folder to receive the Matlab execution logs
- - convention for where toolboxes live in the container file system
- - convention for "mounting in" shared toolboxes from the host
- - convention for "mounting in" an additional working folder to share with the host and add to the Matlab path
- - including a startup.m to configure the ToolboxToolbox, shared toolboxes, and working folder
- - convention for how to invoke and pass args to the container, including:
-   - toolbox configuration command
-   - Matlab command for the job itself
+Others demonstrate how to generate jobs and job scripts that can be used to run tests on Matlab toolboxes, locally, or on a Jenkins server.
 
-## Matlab Support, plus Docker
-This will extend the base image and add support for running Docker containers inside the job container.  This will be useful for toolboxes like RenderToolbox4, which use Docker to distrubute native binaries that can be called from Matlab.
-
-This image will be responsible for:
- - installing Docker client
- - convention for invoking the container with "monted in" socket to talk to host Docker daemon
-
-## Matlab Support, plus Docker and native system libs
-This will extend the "plus Docker" image and add support for native system libraries used by RenderToolbox4, like Assimp and OpenEXR.
-
-This image will be an example of how to extend the "Matlab Support" base image or "plus Docker" image, to suit a particular application like RenderToolbox4.
-
-This image will be responsible for:
-  - installing Assimp system library
-  - installing OpenEXR system library
-  - setting the LD_PRELOAD environment variable to make sure that Matlab runs with up-to-date C/C++ libs
-
-# Out of Scope
-I hope that this project will help with wrangling dependencies and syntax required to run batch, distributed, and test jobs!  But this project can't do it all.  Configuring things like external machines and services will still be up to the user -- especially when they require billing and secret credentials.
-
-For example:
- - AWS account
- - AWS Command Line Interface `aws`
- - Kubernetes Cluster
- - Kubernetes command line client `kubectl`
- - etc.
-
+# Docker
+In order to execute jobs, we need to know things like where Matlab is installed, how to obtain Matlab toolbox dependencies, and where to find for input and output files.  We use Docker images to establish conventions for these things, and write job execution scripts against the Docker images.  So far we have three:
+ - [mjs-base](docker/mjs-base) -- this image establishes lots of conventions, like how to mount Matlab into a running container and where to look find input and output files.  It includes the ToolboxToolbox to manage Matlab toolbox dependencies.
+ - [mjs-docker](docker/mjs-docker) -- this extends the mjs-base image to include the Docker client, which can be connected to the Docker daemon running on the Docker host.  This allows jobs that rely on Docker to keep using Docker, even though they are themselves running insice a container.
+ - [mjs-rtb](docker/mjs-rtb) - this extends the mjs-docker image with native system dependencies required the RenderToolbox4.  This image is purpose-built for RenderToolbox4 and less general than mjs-base or mjs-docker.  It may be a useful example of how to extend the general-purpose images for jobs that have special requirements.
