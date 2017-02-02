@@ -31,7 +31,7 @@ We have several [examples](matlab/examples) of working with jobs and execution e
 Others demonstrate how to generate jobs and job scripts that can be used to run tests on Matlab toolboxes, locally, or on a Jenkins server.
 
 # Docker
-In order to execute jobs, we need to know things like where Matlab is installed, how to obtain Matlab toolbox dependencies, and where to find for input and output files.  We use Docker images to establish conventions for these things, and write job execution scripts against the Docker images.  So far we have three:
+In order to execute jobs, we need to know things like where Matlab is installed, how to obtain Matlab toolbox dependencies, and where to find input and output files.  We use Docker images to establish conventions for these things, and write job execution scripts against the Docker images.  So far we have three:
  - [mjs-base](docker/mjs-base) -- this image establishes lots of conventions, like how to mount Matlab into a running container and where to look find input and output files.  It includes the ToolboxToolbox to manage Matlab toolbox dependencies.
  - [mjs-docker](docker/mjs-docker) -- this extends the mjs-base image to include the Docker client, which can be connected to the Docker daemon running on the Docker host.  This allows jobs that rely on Docker to keep using Docker, even though they are themselves running insice a container.
  - [mjs-rtb](docker/mjs-rtb) - this extends the mjs-docker image with native system dependencies required the RenderToolbox4.  This image is purpose-built for RenderToolbox4 and less general than mjs-base or mjs-docker.  It may be a useful example of how to extend the general-purpose images for jobs that have special requirements.
