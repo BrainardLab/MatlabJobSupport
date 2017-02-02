@@ -12,7 +12,7 @@ The goal of this project is to make it easier to pack up Matlab work as a "job",
  
 We can do this with a combination of Matlab functions and Docker images.  The functions will help us declare jobs to be executed and resources needed.  They will also generate the complicated syntax required to invoke Docker, SSH, and AWS.
 
-The Docker images will provide portable, isolated execution environments where jobs can run, and conventions for organzing files configuring Matlab toolboxes.
+The Docker images will provide portable, isolated execution environments where jobs can run, and conventions for organzing files and configuring Matlab toolboxes.
 
 # Jobs
 We have some Matlab functions for working with [jobs](matlab/jobs) in Matlab.  These help do things like:
