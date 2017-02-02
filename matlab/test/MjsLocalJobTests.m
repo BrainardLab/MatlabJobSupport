@@ -25,9 +25,20 @@ classdef MjsLocalJobTests < matlab.unittest.TestCase
                 'jobCommand', command);
         end
         
+        function [job, intValue, outputFile] = multiPartCommandJob(testCase)
+            intValue = randi(1e9);
+            outputFile = fullfile(testCase.tempDir, 'integerSaverJob.mat');
+            command = { ...
+                sprintf('evalin(''base'', ''intValue=%d'');', intValue), ...
+                sprintf('evalin(''base'', ''save(''''%s'''')'', ''intValue'');', outputFile)};
+            job = mjsJob( ...
+                'name', 'multiPartCommandJob', ...
+                'jobCommand', command);
+        end
+        
         function [job, errorMessage] = errorJob(testCase)
             errorMessage = 'This is a test error.';
-            command = {@error, errorMessage};
+            command = sprintf('error(''%s'')', errorMessage);
             job = mjsJob( ...
                 'name', 'errorJob', ...
                 'jobCommand', command);
@@ -47,6 +58,16 @@ classdef MjsLocalJobTests < matlab.unittest.TestCase
         
         function testInDockerSuccess(testCase)
             [job, intValue, outputFile] = testCase.integerSaverJob();
+            mjsExecuteLocal(job, ...
+                'scriptFile', fullfile(testCase.tempDir, 'scripts', [job.name '.sh']), ...
+                'outputDir', testCase.tempDir);
+            testCase.assertEqual(exist(outputFile, 'file'), 2);
+            jobOutput = load(outputFile);
+            testCase.assertEqual(jobOutput.intValue, intValue);
+        end
+        
+        function testMultiPartCommandSuccess(testCase)
+            [job, intValue, outputFile] = testCase.multiPartCommandJob();
             mjsExecuteLocal(job, ...
                 'scriptFile', fullfile(testCase.tempDir, 'scripts', [job.name '.sh']), ...
                 'outputDir', testCase.tempDir);
@@ -91,7 +112,7 @@ classdef MjsLocalJobTests < matlab.unittest.TestCase
             % "forget" to add the input folder that contains the function
             job = mjsJob( ...
                 'name', 'forgotInputDir', ...
-                'jobCommand', {@deepTestFunction});
+                'jobCommand', 'deepTestFunction');
             status = mjsExecuteLocal(job, ...
                 'scriptFile', fullfile(testCase.tempDir, 'scripts', [job.name '.sh']), ...
                 'outputDir', testCase.tempDir);
@@ -113,7 +134,7 @@ classdef MjsLocalJobTests < matlab.unittest.TestCase
             % "remember" to add the input folder that contains the function
             job = mjsJob( ...
                 'name', 'rememberedInputDir', ...
-                'jobCommand', {@deepTestFunction});
+                'jobCommand', 'deepTestFunction');
             [status, result] = mjsExecuteLocal(job, ...
                 'scriptFile', fullfile(testCase.tempDir, 'scripts', [job.name '.sh']), ...
                 'inputDir', inputDir, ...
@@ -155,7 +176,7 @@ classdef MjsLocalJobTests < matlab.unittest.TestCase
             
             % make a job that uses the same toolbox
             job = testCase.integerSaverJob();
-            job.toolboxCommand = {@tbUse, 'sample-repo'};
+            job.toolboxCommand = 'tbUse(''sample-repo'')';
             
             % run the job with the shared toolbox folder mapped in
             [status, result] = mjsExecuteLocal(job, ...
@@ -179,7 +200,7 @@ classdef MjsLocalJobTests < matlab.unittest.TestCase
                 'outputDir', testCase.tempDir, ...
                 'outputOwner', 'current');
             testCase.assertEqual(status, 0);
-
+            
             % output file should contain expected data
             testCase.assertEqual(exist(outputFile, 'file'), 2);
             jobOutput = load(outputFile);

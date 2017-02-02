@@ -52,8 +52,7 @@ if ischar(command)
     eval(command);
     printTimestamp('...did %s command', name);
 elseif iscell(command)
-    commandString = strtrim(evalc('disp(command)'));
-    printTimestamp('...doing %s command <%s>', name, commandString);
-    feval(command{:});
-    printTimestamp('...did %s command', name);
+    for cc = 1:numel(command)
+        doCommand(command{cc}, name);
+    end
 end
