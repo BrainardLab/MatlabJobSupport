@@ -15,7 +15,7 @@ We can do this with a combination of Matlab functions and Docker images.  The fu
 The Docker images will provide portable, isolated execution environments where jobs can run, and conventions for organzing files and configuring Matlab toolboxes.
 
 # Jobs
-We have some Matlab functions for working with [jobs](matlab/jobs) in Matlab.  These help do things like:
+We have some Matlab functions for working with [jobs](matlab/jobs).  These help do things like:
  - Declare a job of work as a Matlab struct.
  - Save/load jobs to/from JSON.
  - Execute the job in Matlab and exit with a status code that indicates job success.
