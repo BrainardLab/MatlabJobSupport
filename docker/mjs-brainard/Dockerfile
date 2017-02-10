@@ -24,7 +24,7 @@ MAINTAINER Ben Heasly <benjamin.heasly@gmail.com>
 WORKDIR /mjs/toolboxes
 RUN git clone https://github.com/Psychtoolbox-3/Psychtoolbox-3.git \
     && chmod -R a+w /mjs/toolboxes/Psychtoolbox-3
-RUN git https://github.com/isetbio/isetbio.git \
+RUN git clone https://github.com/isetbio/isetbio.git \
     && chmod -R a+w /mjs/toolboxes/isetbio
 RUN git clone https://github.com/BrainardLab/BrainardLabToolbox.git \
     && chmod -R a+w /mjs/toolboxes/BrainardLabToolbox
