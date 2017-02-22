@@ -5,11 +5,13 @@
 % Web Services Command Line Interface (aka AWS CLI).
 %
 % This assumes you have an AWS account set up, and have configured the AWS
-% CLI for your local machine.  It also assumes you have a Linux-based
-% Amazon Machine Image ready to go, with the following already installed:
+% CLI for your local machine.  You local machine must also have the jq
+% utility installed, for parsing JSON.  See https://stedolan.github.io/jq/
+%
+% This also assumes you have a Linux-based Amazon Machine Image ready to
+% go, with the following already installed: 
 %   - Docker
 %   - Matlab
-%   - jq (for parsing JSON, see https://stedolan.github.io/jq/)
 %
 % Setting all that up would be outside the scope of this example. But once
 % you have it set up, this example should help you send Matlab jobs to AWS.
