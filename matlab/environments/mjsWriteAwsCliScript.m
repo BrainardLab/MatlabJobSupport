@@ -114,7 +114,7 @@ try
     fprintf(fid, '  --security-groups %s \\\n', securityGroupArg);
     
     if ~isempty(iamProfile)
-        fprintf(fid, '  --iam-instance-profile %s \\\n', iamProfile);
+        fprintf(fid, '  --iam-instance-profile Name=%s \\\n', iamProfile);
     end
     
     if ~isempty(identity)
