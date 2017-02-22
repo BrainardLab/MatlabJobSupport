@@ -86,14 +86,14 @@ user = 'ubuntu';
 % you need to have this "identity" file locally
 %   to match an identity known to the AWS account
 %   ask David, Nicolas, or Ben
-identity = '~/aws/render-toolbox.pem';
+identity = '$HOME/aws/render-tooblox.pem';
 
 % whether to terminate the instance when the job is done
 terminate = true;
 
 % local file where we can auto-accept remote ssh key
 %   this prevents us having to type "yes" before the job can run
-knownHostsFile = '~/.ssh/known_hosts';
+knownHostsFile = '$HOME/.ssh/known_hosts';
 
 
 mjsSetEnvironmetProfile('aws', ...
