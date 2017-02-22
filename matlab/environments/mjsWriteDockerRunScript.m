@@ -38,6 +38,8 @@ parser.addParameter('inputDir', '', @ischar);
 parser.addParameter('outputDir', '', @ischar);
 parser.addParameter('outputOwner', '', @ischar);
 parser.addParameter('workingDir', '', @ischar);
+parser.addParameter('hostSetupCommand', '', @ischar);
+parser.addParameter('hostCleanupCommand', '', @ischar);
 parser.parse(job, arguments);
 job = parser.Results.job;
 scriptFile = parser.Results.scriptFile;
@@ -58,6 +60,8 @@ inputDir = parser.Results.inputDir;
 outputDir = parser.Results.outputDir;
 outputOwner = parser.Results.outputOwner;
 workingDir = parser.Results.workingDir;
+hostSetupCommand = parser.Results.hostSetupCommand;
+hostCleanupCommand = parser.Results.hostCleanupCommand;
 
 % default workingDir is outputDir
 if isempty(workingDir)
@@ -93,6 +97,13 @@ try
     fprintf(fid, '\n');
     fprintf(fid, '# embed the Matlab job as JSON\n');
     fprintf(fid, 'JOB_JSON="%s"\n', escapedJson);
+    
+    %% Setup command to run on the Docker host.
+    if ~isempty(hostSetupCommand)
+        fprintf(fid, '\n');
+        fprintf(fid, '# host setup\n');
+        fprintf(fid, '%s\n', hostSetupCommand);
+    end
     
     %% Find Matlab in the execution environment.
     if isempty(matlabDir)
@@ -219,6 +230,13 @@ try
         fprintf(fid, '  %s \\\n', dockerImage);
         fprintf(fid, '  -c "chown -R $OUTPUT_UID:$OUTPUT_UID %s"\n', outputDir);
         
+    end
+    
+    %% Cleanup command to run on the Docker host.
+    if ~isempty(hostCleanupCommand)
+        fprintf(fid, '\n');
+        fprintf(fid, '# host cleanup\n');
+        fprintf(fid, '%s\n', hostCleanupCommand);
     end
     
     fprintf(fid, '\n');
