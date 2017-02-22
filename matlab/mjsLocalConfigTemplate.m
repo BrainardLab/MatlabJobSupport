@@ -67,9 +67,9 @@ mjsSetEnvironmetProfile('jenkins', ...
 %   But keeping this up to date will require someont to become familiar
 %   with the AWS EC2 section of the AWS account.
 
-% Amazon Machine Image called "RTB Jobs 10".
+% Amazon Machine Image called "RTB Jobs 11".
 %   Ubuntu image with Docker, Matlab, and AWS CLI installed
-amiId = 'ami-16d57076';
+amiId = 'ami-faa2229a';
 
 % allow the instance to use the AWS CLI
 %   to do things like copy data to and from S3
