@@ -48,3 +48,63 @@ mjsSetEnvironmetProfile('jenkins', ...
     'projectsDir', '$WORKSPACE', ...
     'dockerImage', 'ninjaben/mjs-base:latest', ...
     'javaDir', 'bundled');
+
+
+%% Aws jobs.
+%   This profile is good for running jobs on short-lived AWS instances.
+%
+%   It requires that you have the AWS CLI set up on your local machine.
+%       https://github.com/BrainardLab/MatlabJobSupport/wiki/AWS-Workstation-Setup
+%
+%   It also requires that you have the jq utility installed on your local
+%   machine.
+%       https://stedolan.github.io/jq/
+%
+%   It also assumes that your AWS account has an AMI set up with Docker and
+%   Matlab both installed and ready to go.
+%
+%   The settings below should be good for the Brainard Lab AWS account.
+%   But keeping this up to date will require someont to become familiar
+%   with the AWS EC2 section of the AWS account.
+
+% Amazon Machine Image called "RTB Jobs 9".
+%   Ubuntu image with Docker and Matlab installed and ready to go
+amiId = 'ami-16d57076';
+
+% the size/style of the virtual machine to spin up
+%   Matlab wants at least 2GB ram -> at least t2.small
+instanceType = 't2.small';
+
+% firewall for the AWS instance
+%   default allows access to the Matlab License server inside AWS
+%   all-ssh allows us to connect and send the job from here
+securityGroups = {'default', 'all-ssh'};
+
+% user name to use on the server
+user = 'ubuntu';
+
+% you need to have this "identity" file locally
+%   to match an identity known to the AWS account
+%   ask David, Nicolas, or Ben
+identity = '~/aws/render-toolbox.pem';
+
+% whether to terminate the instance when the job is done
+terminate = true;
+
+% local file where we can auto-accept remote ssh key
+%   this prevents us having to type "yes" before the job can run
+knownHostsFile = '~/.ssh/known_hosts';
+
+
+mjsSetEnvironmetProfile('aws', ...
+    'dockerImage', 'ninjaben/mjs-base:latest', ...
+    'javaDir', 'bundled', ...
+    'outputOwner', user, ...
+    'amiId', amiId, ...
+    'instanceType', instanceType, ...
+    'securityGroups', securityGroups, ...
+    'user', user, ...
+    'identity', identity, ...
+    'terminate', terminate, ...
+    'knownHostsFile', knownHostsFile);
+
