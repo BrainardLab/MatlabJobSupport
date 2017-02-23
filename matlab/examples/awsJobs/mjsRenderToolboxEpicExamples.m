@@ -14,11 +14,8 @@ clc;
 
 %% The job we want to run.
 
-% choose a name for this job and the output bucket
-jobDate = datestr(now(), 'yyyy-mm-dd-HH-MM-SS');
-
 job = mjsJob( ...
-    'name', 'renderToolboxEpicValidation', ...
+    'name', 'renderToolboxEpicExamples', ...
     'toolboxCommand', 'tbUse(''RenderToolbox4'');', ...
     'jobCommand', 'rtbRunEpicExamples()');
 
@@ -32,6 +29,9 @@ instanceType = 'm4.large';
 
 % where to put the output on the AWS instance
 outputDir = ['/home/ubuntu/' job.name];
+
+% use the date as the name for this data set
+jobDate = datestr(now(), 'yyyy-mm-dd-HH-MM-SS');
 
 % copy all the output to S3
 bucketPath = ['s3://render-toolbox-reference/all-example-scenes/' jobDate];
@@ -47,6 +47,3 @@ hostCleanupCommand = sprintf('aws s3 cp "%s" "%s" --recursive --region us-west-2
     'outputDir', outputDir, ...
     'hostCleanupCommand', hostCleanupCommand, ...
     'dryRun', true);
-
-fprintf('Generated AWS CLI script:\n');
-system(sprintf('cat "%s"', awsCliScriptFile));
