@@ -35,13 +35,15 @@ RUN apt-get update && apt-get install -y \
     libboost-all-dev \
     openexr \
     cmake \
+    wget \
     pkg-config
 
 ### Assimp
 WORKDIR /assimp
-RUN git clone https://github.com/assimp/assimp.git
-WORKDIR /assimp/assimp
-RUN git checkout v3.3.1
+RUN wget https://github.com/assimp/assimp/archive/v3.3.1.tar.gz
+RUN mkdir assimp
+RUN tar -xzf v3.3.1.tar.gz
+WORKDIR /assimp/assimp-3.3.1
 RUN cmake CMakeLists.txt -G 'Unix Makefiles' && make && make install && ldconfig
 
 ### Make sure Matlab starts with the same version of libstdc++ that Assimp uses
