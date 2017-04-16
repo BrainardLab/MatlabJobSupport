@@ -1,4 +1,4 @@
-# ninjaben/mjs-docker
+# brainardlab/mjs-docker
 #
 # This is part of the MatlabJobSupport project.
 #   https://github.com/BrainardLab/MatlabJobSupport
@@ -7,7 +7,7 @@
 # Docker client.  This client can be connected to the Docker daemon running
 # on the host.
 #
-# It is based on the image ninjaben/mjs-base, and inherits the conventions for 
+# It is based on the image brainardlab/mjs-base, and inherits the conventions for 
 # established in that image for directories inside the contianer and directores
 # to map in from the Docker host.
 #   https://github.com/BrainardLab/MatlabJobSupport/blob/master/docker/mjs-base/Dockerfile
@@ -20,10 +20,10 @@
 #  -v /var/run/docker.sock:/var/run/docker.sock \
 #  -v /usr/local/MATLAB/R2016a:/usr/local/MATLAB/from-host \
 #  -v /var/log/matlab:/var/log/matlab \
-#  ninjaben/mjs-docker -r "system('docker run hello-world');exit;" 
+#  brainardlab/mjs-docker -r "system('docker run hello-world');exit;" 
 #
 
-FROM ninjaben/mjs-base
+FROM brainardlab/mjs-base
 
 MAINTAINER Ben Heasly <benjamin.heasly@gmail.com>
 

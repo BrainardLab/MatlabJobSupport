@@ -1,4 +1,4 @@
-# ninjaben/mjs-rtb
+# brainardlab/mjs-rtb
 #
 # This is part of the MatlabJobSupport project.
 #   https://github.com/BrainardLab/MatlabJobSupport
@@ -10,7 +10,7 @@
 #   - OpenExr
 # See https://github.com/RenderToolbox/RenderToolbox4
 #
-# It is based on the image ninjaben/mjs-base, and inherits the conventions for 
+# It is based on the image brainardlab/mjs-base, and inherits the conventions for 
 # established in that image for directories inside the contianer and directores
 # to map in from the Docker host.
 #   https://github.com/BrainardLab/MatlabJobSupport/blob/master/docker/mjs-base/Dockerfile
@@ -23,10 +23,10 @@
 #  -v /var/run/docker.sock:/var/run/docker.sock \
 #  -v /usr/local/MATLAB/R2016a:/usr/local/MATLAB/from-host \
 #  -v /var/log/matlab:/var/log/matlab \
-#  ninjaben/mjs-rtb -r "tbUse('RenderToolbox4');rtbTestInstallation();exit;" 
+#  brainardlab/mjs-rtb -r "tbUse('RenderToolbox4');rtbTestInstallation();exit;" 
 #
 
-FROM ninjaben/mjs-docker
+FROM brainardlab/mjs-docker
 
 MAINTAINER Ben Heasly <benjamin.heasly@gmail.com>
 

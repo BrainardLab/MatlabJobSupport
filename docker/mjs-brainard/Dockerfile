@@ -1,4 +1,4 @@
-# ninjaben/mjs-brainard
+# brainardlab/mjs-brainard
 #
 # This is part of the MatlabJobSupport project.
 #   https://github.com/BrainardLab/MatlabJobSupport
@@ -10,13 +10,13 @@
 #   - isetbio
 #   - BrainardLabToolbox
 #
-# It is based on the image ninjaben/mjs-base, and inherits the conventions for 
+# It is based on the image brainardlab/mjs-base, and inherits the conventions for 
 # established in that image for directories inside the contianer and directores
 # to map in from the Docker host.
 #   https://github.com/BrainardLab/MatlabJobSupport/blob/master/docker/mjs-base/Dockerfile
 #
 
-FROM ninjaben/mjs-base
+FROM brainardlab/mjs-base
 
 MAINTAINER Ben Heasly <benjamin.heasly@gmail.com>
 

@@ -1,4 +1,4 @@
-# ninjaben/mjs-base
+# brainardlab/mjs-base
 #
 # This is the base image for the MatlabJobSupport project.
 #   https://github.com/BrainardLab/MatlabJobSupport
@@ -43,7 +43,7 @@
 #  -e "OUTPUT_DIR=/home/ben/Documents/MATLAB/output" \
 #  -v /home/ben/Documents/MATLAB/output:/home/ben/Documents/MATLAB/outout \
 #  -e "WORKING_DIR=/home/ben/Documents/MATLAB/output" \
-#  ninjaben/mjs-base 
+#  brainardlab/mjs-base 
 #
 
 FROM ubuntu:14.04

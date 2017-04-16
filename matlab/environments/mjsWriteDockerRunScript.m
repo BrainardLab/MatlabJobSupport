@@ -3,7 +3,7 @@ function scriptFile = mjsWriteDockerRunScript(job, varargin)
 %
 % This saves us from having to write lots of Docker syntax by hand.  This
 % assumes we're working with the conventions established in the Docker
-% image ninjaben/mjs-base.
+% image brainardlab/mjs-base.
 %
 % It should be the case that you can copy the generated scriptFile and
 % jobFile to another host and run them.  The host must have Matlab
@@ -21,7 +21,7 @@ parser.KeepUnmatched = true;
 parser.StructExpand = true;
 parser.addRequired('job', @isstruct);
 parser.addParameter('scriptFile', '', @ischar);
-parser.addParameter('dockerImage', 'ninjaben/mjs-base', @ischar);
+parser.addParameter('dockerImage', 'brainardlab/mjs-base', @ischar);
 parser.addParameter('dockerOptions', '--rm', @ischar);
 parser.addParameter('dockerNetwork', '--net=host', @ischar);
 parser.addParameter('mountDockerSocket', false, @islogical);
@@ -147,7 +147,7 @@ try
     %% Do docker run with options and job command.
     fprintf(fid, '\n');
     fprintf(fid, '# invoke "docker run" with lots of options \n');
-    fprintf(fid, '# using conventions established in ninjaben/mjs-base\n');
+    fprintf(fid, '# using conventions established in brainardlab/mjs-base\n');
     fprintf(fid, 'docker run %s %s \\\n', dockerOptions, dockerNetwork);
     fprintf(fid, '  -v "$MATLAB_DIR":/usr/local/MATLAB/from-host \\\n');
     

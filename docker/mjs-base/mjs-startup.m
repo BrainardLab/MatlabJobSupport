@@ -1,10 +1,10 @@
 %% Startup script for use with the ToolboxToolbox and MatlabJobSupport.
 %
 % This startup.m is intended for use inside Docker containers that are
-% based on the image ninjaben/mjs-base.
+% based on the image brainardlab/mjs-base.
 %
 % It configures ToolboxToolbox to use directory conventions established in
-% ninjaben/mjs-base:
+% brainardlab/mjs-base:
 %	- /mjs -- startup.m, initial dir for container startup
 %	- /mjs/ToolboxToolbox -- the ToolboxToolbox
 %   - /mjs/projects -- projects that can be deployed with ToolboxToolbox

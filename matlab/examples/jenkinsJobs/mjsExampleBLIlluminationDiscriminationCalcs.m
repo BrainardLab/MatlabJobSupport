@@ -1,7 +1,7 @@
-% Create a job and Docker run script for validating isetbio.
+% Create a job and Docker run script for validating BLIlluminationDiscriminationCalcs.
 %
 % This script will produce a job struct suitable for running all the
-% UnitTestToolbox validations for isetbio.
+% UnitTestToolbox validations for BLIlluminationDiscriminationCalcs.
 %
 % It will produce a shell script suitable for running the tests locally,
 % and another script suitable for running the tests on Jenkins.
@@ -12,22 +12,24 @@ clear;
 clc;
 
 %% The job we want to run.
-%   deploy isetbio
-%   invoke the test runner function
+%   just invoke the test runner function
 
 job = mjsJob( ...
-    'name', 'validateIsetbio', ...
-    'toolboxCommand', 'tbUse(''isetbio'')', ...
-    'jobCommand', 'ieValidateFullAll(''asAssertion'', true)');
+    'name', 'validateBLIlluminationDiscriminationCalcs', ...
+    'toolboxCommand', 'tbUseProject(''BLIlluminationDiscriminationCalcs'')', ...
+    'jobCommand', 'illcalcsValidateFullAll(''asAssertion'', true)');
 
 
 %% Run the job in a Docker container on this machine.
+%   "projectsDir" to mount the local project into the container
 %   "dockerImage" "...:latest" to auto-update the mjs docker image
 %   "javaDir" to set up Java/gradle/RemoteDataToolbox in the container
 %   "dryRun" in case you don't want to run the tests yet
 
+[~, ~, projectsDir] = tbLocateProject('BLIlluminationDiscriminationCalcs');
 [status, result, localScript] = mjsExecuteLocal(job, ...
     'profile', 'local', ...
+    'projectsDir', projectsDir, ...
     'dockerImage', 'brainardlab/mjs-base:latest', ...
     'javaDir', 'bundled', ...
     'dryRun', true);
@@ -40,6 +42,8 @@ system(sprintf('cat "%s"', localScript));
 
 jenkinsScript = mjsWriteDockerRunScript(job, ...
     'profile', 'jenkins', ...
+    'dockerImage', 'brainardlab/mjs-base:latest', ...
+    'javaDir', 'bundled', ...
     'dryRun', true);
 
 fprintf('Jenkins shell script:\n');
