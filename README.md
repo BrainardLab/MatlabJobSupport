@@ -1,7 +1,7 @@
 # MatlabJobSupport
 Scripts and Docker images to support Matlab jobs including batch, distributed, and test jobs.
 
-This is a work in progress.
+This project is a work in progress, but we are using it with some success particularly for Matlab build integration.
 
 # Overview
 The goal of this project is to make it easier to pack up Matlab work as a "job", and to support job executions in several environments, like:
