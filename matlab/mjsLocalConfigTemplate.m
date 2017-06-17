@@ -90,7 +90,12 @@ user = 'ubuntu';
 % you need to have this "identity" file locally
 %   to match an identity known to the AWS account
 %   ask David, Nicolas, or Ben
-identity = '$HOME/aws/render-toolbox.pem';
+%
+% We have a little problem with a typo.  Currently
+% have file and this identity as "tooBLox" rather
+% than the ultimately desired "tooLBox".
+%identity = '$HOME/aws/render-toolbox.pem';
+identity = '$HOME/aws/render-tooblox.pem';
 
 % whether to terminate the instance when the job is done
 terminate = true;
