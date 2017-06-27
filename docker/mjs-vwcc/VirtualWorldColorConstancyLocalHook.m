@@ -28,9 +28,9 @@ if isempty(workingDir) || 7 ~= exist(workingDir, 'dir')
 else
     myFolder = workingDir;
 end
-dataDir = myFolder;
-if (~exist(dataDi,'dir'))
-    mkdir(dataDi);
+dataDir = fullfile(myFolder,'VirtualWorldColorConstancy');
+if (~exist(dataDir,'dir'))
+    mkdir(dataDir);
 end
 setpref(projectName, 'baseFolder',dataDir);
 
