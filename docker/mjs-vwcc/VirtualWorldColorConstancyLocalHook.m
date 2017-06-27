@@ -22,11 +22,15 @@ projectName = 'VirtualWorldColorConstancy';
 % We make an attempt below to do sensible things for users/machines we know
 % about before dropping to the default
 
-dataDirRoot = fullfile(rtbGetUserFolder(), 'output');
-dataDirName = 'VirtualWorldColorConstancy';
-dataDir = fullfile(dataDirRoot,projectName,'');
-if (~exist(dataDir,'dir'))
-    mkdir(dataDir);
+workingDir = getenv('WORKING_DIR');
+if isempty(workingDir) || 7 ~= exist(workingDir, 'dir')
+    myFolder = '/var/render_toolbox';
+else
+    myFolder = workingDir;
+end
+dataDir = myFolder;
+if (~exist(dataDi,'dir'))
+    mkdir(dataDi);
 end
 setpref(projectName, 'baseFolder',dataDir);
 
