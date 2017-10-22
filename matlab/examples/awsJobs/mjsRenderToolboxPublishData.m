@@ -2,7 +2,7 @@
 %
 % This script will produce a job struct suitable for publishing
 % RenderToolbox reference data to the brainard-archiva archive.
-%   http://52.32.77.154/
+%   http://brainard-archiva.psych.upenn.edu/
 %
 % It will produce a shell script suitable for running the job on a
 % short-lived AWS instance, via SSH, under control of the local
